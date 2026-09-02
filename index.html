@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lưới xám</title>
+<meta name="description" content="Một thế giới xám, đều tăm tắp. Mỗi điều bạn làm theo ý mình sẽ khiến một ô vỡ ra.">
+<meta name="theme-color" content="#161A20">
+<meta property="og:title" content="Lưới xám">
+<meta property="og:description" content="Một thế giới xám, đều tăm tắp. Mỗi điều bạn làm theo ý mình sẽ khiến một ô vỡ ra.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#161A20;
+    --board:#1C212A;
+    --ash:#2B313B;
+    --ash-line:#39414D;
+    --bone:#D6D3C9;
+    --dim:#6D7583;
+    --tile-gap:3px;
+    --cols:18;
+    --rows:12;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+
+  body{
+    background:var(--void);
+    color:var(--bone);
+    font-family:"Be Vietnam Pro",system-ui,sans-serif;
+    font-weight:300;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(20px,4vh,44px);
+    padding:clamp(16px,3vw,40px);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- board ---------- */
+
+  .board-wrap{
+    width:100%;
+    max-width:min(96vw, calc((100vh - 220px) * 1.5), 1040px);
+    aspect-ratio:3/2;
+    position:relative;
+  }
+
+  .board{
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:repeat(var(--cols),1fr);
+    grid-template-rows:repeat(var(--rows),1fr);
+    gap:var(--tile-gap);
+    background:var(--board);
+    padding:var(--tile-gap);
+    border:1px solid var(--ash-line);
+  }
+
+  .tile{position:relative}
+
+  .land{
+    position:absolute;
+    inset:0;
+    background:var(--ash);
+    border:1px solid var(--ash-line);
+    border-radius:0;
+    display:grid;
+    place-items:center;
+    transition:background .3s ease, border-color .3s ease;
+  }
+
+  .tile.free .land{
+    background:var(--fill);
+    border:1px solid var(--edge);
+    border-radius:var(--blob);
+    transform:rotate(var(--rot));
+    cursor:pointer;
+  }
+
+  .tile.free{animation:breathe 9s ease-in-out infinite alternate;animation-delay:var(--sway)}
+  @keyframes breathe{from{transform:translateY(0) scale(1)}to{transform:translateY(-1.5px) scale(1.035)}}
+
+  .tile.new .land{animation:emerge .85s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes emerge{
+    0%{transform:scale(1) rotate(0deg);border-radius:0}
+    30%{transform:scale(1.5) rotate(-9deg)}
+    100%{transform:scale(1) rotate(var(--rot));border-radius:var(--blob)}
+  }
+
+  .tile.shock .land{animation:shock .55s ease-out both;animation-delay:var(--d)}
+  @keyframes shock{0%{transform:scale(1)}30%{transform:scale(.82)}100%{transform:scale(1)}}
+
+  .ring{
+    position:absolute;
+    inset:0;
+    border:1px solid var(--edge);
+    border-radius:50%;
+    opacity:0;
+    pointer-events:none;
+  }
+  .tile.new .ring{animation:ripple 1.1s ease-out .05s both}
+  @keyframes ripple{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(4.5)}}
+
+  .sprout{width:66%;height:66%;overflow:visible;pointer-events:none}
+  .sprout path,.sprout circle{
+    stroke:var(--edge);
+    fill:none;
+    stroke-width:2.2;
+    stroke-linecap:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .sprout circle{fill:var(--edge);fill-opacity:.35}
+  .tile.new .sprout path,.tile.new .sprout circle{
+    stroke-dasharray:60;
+    stroke-dashoffset:60;
+    animation:draw .9s ease-out .35s both;
+  }
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* ---------- composer ---------- */
+
+  .below{
+    width:100%;
+    max-width:min(96vw,620px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+
+  .composer{
+    width:100%;
+    display:flex;
+    align-items:baseline;
+    gap:.5ch;
+    border-bottom:1px solid var(--ash-line);
+    padding-bottom:10px;
+    transition:border-color .4s ease;
+  }
+  .composer:focus-within{border-bottom-color:var(--dim)}
+
+  .prefix{
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(17px,2.4vw,22px);
+    color:var(--dim);
+    white-space:nowrap;
+    transition:color .4s ease;
+  }
+  .composer:focus-within .prefix{color:var(--bone)}
+
+  input{
+    flex:1;
+    min-width:0;
+    background:none;
+    border:none;
+    outline:none;
+    color:var(--bone);
+    font-family:"Fraunces",Georgia,serif;
+    font-size:clamp(17px,2.4vw,22px);
+    font-weight:300;
+    padding:0;
+  }
+  input::placeholder{color:#4A515E}
+
+  .hint{
+    font-size:12.5px;
+    letter-spacing:.02em;
+    color:var(--dim);
+    text-align:center;
+    min-height:1.4em;
+    transition:opacity .5s ease;
+    max-width:46ch;
+    line-height:1.55;
+  }
+  .hint.gone{opacity:0}
+
+  .recall{
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--bone);
+    text-align:center;
+    opacity:0;
+    transition:opacity .45s ease;
+    max-width:46ch;
+    line-height:1.6;
+  }
+  .recall.on{opacity:1}
+  .recall .when{
+    display:block;
+    font-family:"Be Vietnam Pro",sans-serif;
+    font-style:normal;
+    font-size:11px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--dim);
+    margin-top:7px;
+  }
+
+  .reset{
+    position:fixed;
+    bottom:12px;
+    right:14px;
+    background:none;
+    border:none;
+    color:#333A45;
+    font-family:inherit;
+    font-size:11px;
+    letter-spacing:.05em;
+    cursor:pointer;
+    padding:6px;
+    transition:color .3s ease;
+  }
+  .reset:hover{color:var(--dim)}
+
+  :focus-visible{outline:1px solid var(--bone);outline-offset:3px}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+  <div class="board-wrap">
+    <div class="board" id="board" role="img" aria-label="Bản đồ của bạn"></div>
+  </div>
+
+  <div class="below">
+    <div class="composer">
+      <span class="prefix">Hôm nay tôi</span>
+      <input id="entry" autocomplete="off" spellcheck="false"
+             placeholder="…làm điều gì theo ý mình?" aria-label="Điều bạn làm theo ý mình hôm nay">
+    </div>
+    <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi nhấn Enter.</p>
+    <p class="recall" id="recall" aria-live="polite"></p>
+  </div>
+
+  <button class="reset" id="reset">xoá tất cả</button>
+
+<script>
+const COLS = 18, ROWS = 12, TOTAL = COLS * ROWS;
+const KEY = 'luoixam:v1';
+
+const PALETTE = [
+  { fill:'rgba(79,168,139,.20)',  edge:'#5FBF9E' },
+  { fill:'rgba(127,168,69,.20)',  edge:'#93BF57' },
+  { fill:'rgba(201,138,62,.20)',  edge:'#D9A15C' },
+  { fill:'rgba(94,134,184,.20)',  edge:'#7BA3D1' },
+  { fill:'rgba(164,95,122,.20)',  edge:'#C07E98' },
+  { fill:'rgba(92,160,170,.20)',  edge:'#74BDC7' }
+];
+
+const SPROUTS = [
+  '<path d="M12 22V10"/><path d="M12 14c-3 0-5-2-5-5 3 0 5 2 5 5z"/><path d="M12 12c3 0 5-2 5-5-3 0-5 2-5 5z"/>',
+  '<path d="M12 22V8"/><path d="M12 13 6 8"/><path d="m12 16 6-5"/><circle cx="12" cy="6" r="2.6"/>',
+  '<path d="M12 22c0-7 3-11 8-13"/><path d="M12 22c0-5-2-8-6-9"/>',
+  '<path d="M12 22v-6"/><path d="M12 16c-4 0-6-3-6-7 4 0 6 3 6 7z"/>',
+  '<path d="M9 22c1-6 0-10-3-13"/><path d="M12 22V9"/><path d="M15 22c-1-5 0-9 3-11"/>',
+  '<path d="M12 22V12"/><circle cx="12" cy="8" r="4"/>'
+];
+
+let entries = [];
+const board = document.getElementById('board');
+const input = document.getElementById('entry');
+const hint  = document.getElementById('hint');
+const recall= document.getElementById('recall');
+
+/* ---------- helpers ---------- */
+
+const rnd = (n) => Math.floor(Math.random() * n);
+
+function blob(){
+  const v = () => 42 + rnd(24);
+  return `${v()}% ${v()}% ${v()}% ${v()}% / ${v()}% ${v()}% ${v()}% ${v()}%`;
+}
+
+function nextTile(taken){
+  if (taken.size === 0) return Math.floor(ROWS / 2) * COLS + Math.floor(COLS / 2);
+  const edge = new Set();
+  taken.forEach(i => {
+    const r = Math.floor(i / COLS), c = i % COLS;
+    [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([dr,dc]) => {
+      const nr = r + dr, nc = c + dc;
+      if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) return;
+      const idx = nr * COLS + nc;
+      if (!taken.has(idx)) edge.add(idx);
+    });
+  });
+  const pool = [...edge];
+  if (!pool.length) return null;
+  return pool[rnd(pool.length)];
+}
+
+function viDate(ts){
+  const d = new Date(ts);
+  return `Ngày ${d.getDate()} tháng ${d.getMonth() + 1}, ${d.getFullYear()}`;
+}
+
+/* ---------- render ---------- */
+
+function buildBoard(){
+  board.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++){
+    const t = document.createElement('div');
+    t.className = 'tile';
+    t.dataset.i = i;
+    t.innerHTML = '<div class="land"><span class="ring"></span></div>';
+    board.appendChild(t);
+  }
+}
+
+function paint(e, isNew){
+  const t = board.children[e.tile];
+  if (!t) return;
+  const p = PALETTE[e.color % PALETTE.length];
+  t.style.setProperty('--fill', p.fill);
+  t.style.setProperty('--edge', p.edge);
+  t.style.setProperty('--blob', e.blob);
+  t.style.setProperty('--rot', e.rot + 'deg');
+  t.style.setProperty('--sway', (e.tile % 7) * 1.3 + 's');
+  t.classList.add('free');
+  t.setAttribute('tabindex', '0');
+  t.setAttribute('role', 'button');
+  t.setAttribute('aria-label', e.text);
+
+  const land = t.querySelector('.land');
+  land.insertAdjacentHTML('beforeend',
+    `<svg class="sprout" viewBox="0 0 24 24">${SPROUTS[e.sprout % SPROUTS.length]}</svg>`);
+
+  if (isNew){
+    t.classList.add('new');
+    setTimeout(() => t.classList.remove('new'), 1400);
+    shockwave(e.tile);
+  }
+}
+
+function shockwave(origin){
+  const or = Math.floor(origin / COLS), oc = origin % COLS;
+  for (let i = 0; i < TOTAL; i++){
+    if (i === origin) continue;
+    const d = Math.max(Math.abs(Math.floor(i / COLS) - or), Math.abs((i % COLS) - oc));
+    if (d > 3) continue;
+    const t = board.children[i];
+    t.style.setProperty('--d', (d * 45) + 'ms');
+    t.classList.add('shock');
+    setTimeout(() => t.classList.remove('shock'), 700 + d * 45);
+  }
+}
+
+function renderAll(){
+  buildBoard();
+  entries.forEach(e => paint(e, false));
+  if (entries.length) hint.classList.add('gone');
+}
+
+/* ---------- actions ---------- */
+
+function addEntry(text){
+  const taken = new Set(entries.map(e => e.tile));
+  const tile = nextTile(taken);
+  if (tile === null) return;
+
+  const e = {
+    text, tile,
+    ts: Date.now(),
+    blob: blob(),
+    rot: rnd(17) - 8,
+    color: rnd(PALETTE.length),
+    sprout: rnd(SPROUTS.length)
+  };
+  entries.push(e);
+  paint(e, true);
+  hint.classList.add('gone');
+  save();
+}
+
+function showRecall(e){
+  recall.innerHTML = `“${e.text}”<span class="when">${viDate(e.ts)}</span>`;
+  recall.classList.add('on');
+  clearTimeout(showRecall.t);
+  showRecall.t = setTimeout(() => recall.classList.remove('on'), 7000);
+}
+
+/* ---------- storage ---------- */
+
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(entries)); }
+  catch (err) { console.warn('Không lưu được:', err); }
+}
+
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) entries = JSON.parse(raw);
+  } catch (err) {
+    entries = [];
+  }
+  renderAll();
+}
+
+/* ---------- events ---------- */
+
+input.addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter') return;
+  const text = input.value.trim();
+  if (!text) return;
+  addEntry(text);
+  input.value = '';
+});
+
+board.addEventListener('click', ev => {
+  const t = ev.target.closest('.tile.free');
+  if (!t) return;
+  const e = entries.find(x => x.tile === +t.dataset.i);
+  if (e) showRecall(e);
+});
+
+board.addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  const t = ev.target.closest('.tile.free');
+  if (!t) return;
+  ev.preventDefault();
+  const e = entries.find(x => x.tile === +t.dataset.i);
+  if (e) showRecall(e);
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('Xoá toàn bộ bản đồ? Không khôi phục lại được.')) return;
+  entries = [];
+  try { localStorage.removeItem(KEY); } catch (err) {}
+  recall.classList.remove('on');
+  hint.classList.remove('gone');
+  renderAll();
+});
+
+load();
+</script>
+</body>
+</html>
