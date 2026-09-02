@@ -249,9 +249,14 @@
 
   <button class="reset" id="reset">xoá tất cả</button>
 
+<!-- Đếm lượt truy cập. Thay MA-CUA-BAN bằng mã bạn nhận được khi đăng ký GoatCounter. -->
+<script data-goatcounter="https://MA-CUA-BAN.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
 <script>
 const COLS = 18, ROWS = 12, TOTAL = COLS * ROWS;
-const KEY = 'luoixam:v1';
+const KEY  = 'luoixam:v1';
+const VKEY = 'luoixam:visits';
 
 const PALETTE = [
   { fill:'rgba(79,168,139,.20)',  edge:'#5FBF9E' },
@@ -384,6 +389,7 @@ function addEntry(text){
   paint(e, true);
   hint.classList.add('gone');
   save();
+  trackMilestone(entries.length);
 }
 
 function showRecall(e){
@@ -391,6 +397,38 @@ function showRecall(e){
   recall.classList.add('on');
   clearTimeout(showRecall.t);
   showRecall.t = setTimeout(() => recall.classList.remove('on'), 7000);
+}
+
+/* ---------- đo lường ----------
+   Chỉ gửi đi những sự kiện ẩn danh dưới đây.
+   Nội dung người dùng viết KHÔNG bao giờ rời khỏi máy họ. */
+
+function track(path, title, tries = 0){
+  if (window.goatcounter && window.goatcounter.count){
+    window.goatcounter.count({ path, title, event: true });
+  } else if (tries < 20){
+    setTimeout(() => track(path, title, tries + 1), 400);
+  }
+}
+
+function trackVisit(){
+  let days = [];
+  try { days = JSON.parse(localStorage.getItem(VKEY) || '[]'); } catch (e) {}
+  const today = new Date().toISOString().slice(0, 10);
+  if (days.includes(today)) return;
+
+  days.push(today);
+  try { localStorage.setItem(VKEY, JSON.stringify(days)); } catch (e) {}
+
+  const n = days.length;
+  track(n <= 14 ? `quay-lai/ngay-${n}` : 'quay-lai/ngay-15+', `Lần mở thứ ${n}`);
+}
+
+function trackMilestone(n){
+  if (n === 1) track('viet/lan-1',  'Viết câu đầu tiên');
+  if (n === 3) track('viet/lan-3',  'Viết đến câu thứ 3');
+  if (n === 7) track('viet/lan-7',  'Viết đến câu thứ 7');
+  if (n === 20) track('viet/lan-20', 'Viết đến câu thứ 20');
 }
 
 /* ---------- storage ---------- */
@@ -446,6 +484,7 @@ document.getElementById('reset').addEventListener('click', () => {
 });
 
 load();
+trackVisit();
 </script>
 </body>
 </html>
