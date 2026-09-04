@@ -27,9 +27,10 @@
 
   *{box-sizing:border-box;margin:0;padding:0}
 
-  html,body{height:100%}
+  html{height:100%}
 
   body{
+    min-height:100dvh;
     background:var(--void);
     color:var(--bone);
     font-family:"Be Vietnam Pro",system-ui,sans-serif;
@@ -40,7 +41,7 @@
     justify-content:center;
     gap:clamp(20px,4vh,44px);
     padding:clamp(16px,3vw,40px);
-    overflow:hidden;
+    overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
 
@@ -48,7 +49,7 @@
 
   .board-wrap{
     width:100%;
-    max-width:min(96vw, calc((100vh - 220px) * 1.5), 1040px);
+    max-width:min(96vw, calc((100dvh - 240px) * 1.5), 1040px);
     aspect-ratio:3/2;
     position:relative;
   }
@@ -173,6 +174,21 @@
   }
   input::placeholder{color:#4A515E}
 
+  .go{
+    flex:0 0 auto;
+    background:none;
+    border:none;
+    padding:4px 2px 4px 10px;
+    cursor:pointer;
+    color:#3C434F;
+    display:grid;
+    place-items:center;
+    transition:color .3s ease, transform .3s ease;
+  }
+  .go svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .composer.ready .go{color:var(--bone)}
+  .composer.ready .go:hover{transform:translateX(3px)}
+
   .hint{
     font-size:12.5px;
     letter-spacing:.02em;
@@ -238,18 +254,21 @@
   </div>
 
   <div class="below">
-    <div class="composer">
+    <form class="composer" id="composer" autocomplete="off">
       <span class="prefix">Hôm nay tôi</span>
-      <input id="entry" autocomplete="off" spellcheck="false"
+      <input id="entry" autocomplete="off" spellcheck="false" enterkeyhint="send"
              placeholder="…làm điều gì theo ý mình?" aria-label="Điều bạn làm theo ý mình hôm nay">
-    </div>
+      <button type="submit" class="go" aria-label="Ghi lại">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
+      </button>
+    </form>
     <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi nhấn Enter.</p>
     <p class="recall" id="recall" aria-live="polite"></p>
   </div>
 
   <button class="reset" id="reset">xoá tất cả</button>
 
-<!-- Đếm lượt truy cập, không cookie. -->
+<!-- Đếm lượt truy cập. Không dùng cookie, không gửi nội dung người dùng viết. -->
 <script data-goatcounter="https://luoixam.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 
@@ -450,12 +469,33 @@ function load(){
 
 /* ---------- events ---------- */
 
-input.addEventListener('keydown', ev => {
-  if (ev.key !== 'Enter') return;
+const composer = document.getElementById('composer');
+
+composer.addEventListener('submit', ev => {
+  ev.preventDefault();
   const text = input.value.trim();
-  if (!text) return;
+  if (!text) { input.focus(); return; }
   addEntry(text);
   input.value = '';
+  composer.classList.remove('ready');
+
+  // Đóng bàn phím và đưa bản đồ trở lại tầm nhìn — nếu không,
+  // trên điện thoại ô vỡ ra ở ngoài màn hình và người dùng tưởng không có gì xảy ra.
+  input.blur();
+  setTimeout(() => {
+    document.querySelector('.board-wrap')
+      .scrollIntoView({ block:'center', behavior:'smooth' });
+  }, 60);
+});
+
+input.addEventListener('input', () => {
+  composer.classList.toggle('ready', input.value.trim().length > 0);
+});
+
+let touched = false;
+input.addEventListener('focus', () => {
+  if (!touched){ touched = true; track('cua-vao/cham-o-nhap', 'Chạm vào ô nhập'); }
+  setTimeout(() => input.scrollIntoView({ block:'nearest', behavior:'smooth' }), 350);
 });
 
 board.addEventListener('click', ev => {
