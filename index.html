@@ -7,7 +7,7 @@
 <meta name="description" content="Một thế giới xám, đều tăm tắp. Mỗi điều bạn làm theo ý mình sẽ khiến một ô vỡ ra.">
 <meta name="theme-color" content="#161A20">
 <meta property="og:title" content="Lưới xám">
-<meta property="og:description" content="Một thế giới xám, đều tăm tắp. Mỗi điều bạn làm theo ý mình sẽ khiến một ô vỡ ra.">
+<meta property="og:description" content="A perfect gray grid. Each day you write one thing you did your own way, and a tile breaks free. After a month, no two maps look the same.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -262,7 +262,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
       </button>
     </form>
-    <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi nhấn Enter.</p>
+    <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi gửi đi.</p>
     <p class="recall" id="recall" aria-live="polite"></p>
   </div>
 
@@ -294,6 +294,36 @@ const SPROUTS = [
   '<path d="M9 22c1-6 0-10-3-13"/><path d="M12 22V9"/><path d="M15 22c-1-5 0-9 3-11"/>',
   '<path d="M12 22V12"/><circle cx="12" cy="8" r="4"/>'
 ];
+
+const STR = {
+  vi: {
+    prefix:      'Hôm nay tôi',
+    placeholder: '…làm điều gì theo ý mình?',
+    hint:        'Một thế giới xám, đều tăm tắp. Viết một điều rồi gửi đi.',
+    inputLabel:  'Điều bạn làm theo ý mình hôm nay',
+    goLabel:     'Ghi lại',
+    boardLabel:  'Bản đồ của bạn',
+    reset:       'xoá tất cả',
+    confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.'
+  },
+  en: {
+    prefix:      'Today I',
+    placeholder: '…did one thing my own way',
+    hint:        'A gray world, every tile the same. Write one thing and send it.',
+    inputLabel:  'One thing you did your own way today',
+    goLabel:     'Save',
+    boardLabel:  'Your map',
+    reset:       'erase everything',
+    confirmReset:'Erase the whole map? This cannot be undone.'
+  }
+};
+
+const forced = new URLSearchParams(location.search).get('lang');
+const LANG = (forced === 'vi' || forced === 'en')
+  ? forced
+  : (navigator.language || 'vi').toLowerCase().startsWith('vi') ? 'vi' : 'en';
+const T = STR[LANG];
+const LOCALE = LANG === 'vi' ? 'vi-VN' : 'en-US';
 
 let entries = [];
 const board = document.getElementById('board');
@@ -327,9 +357,21 @@ function nextTile(taken){
   return pool[rnd(pool.length)];
 }
 
-function viDate(ts){
-  const d = new Date(ts);
-  return `Ngày ${d.getDate()} tháng ${d.getMonth() + 1}, ${d.getFullYear()}`;
+function fmtDate(ts){
+  return new Intl.DateTimeFormat(LOCALE, {
+    day:'numeric', month:'long', year:'numeric'
+  }).format(new Date(ts));
+}
+
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.querySelector('.prefix').textContent = T.prefix;
+  input.placeholder = T.placeholder;
+  input.setAttribute('aria-label', T.inputLabel);
+  hint.textContent = T.hint;
+  board.setAttribute('aria-label', T.boardLabel);
+  document.querySelector('.go').setAttribute('aria-label', T.goLabel);
+  document.getElementById('reset').textContent = T.reset;
 }
 
 /* ---------- render ---------- */
@@ -412,7 +454,7 @@ function addEntry(text){
 }
 
 function showRecall(e){
-  recall.innerHTML = `“${e.text}”<span class="when">${viDate(e.ts)}</span>`;
+  recall.innerHTML = `“${e.text}”<span class="when">${fmtDate(e.ts)}</span>`;
   recall.classList.add('on');
   clearTimeout(showRecall.t);
   showRecall.t = setTimeout(() => recall.classList.remove('on'), 7000);
@@ -515,7 +557,7 @@ board.addEventListener('keydown', ev => {
 });
 
 document.getElementById('reset').addEventListener('click', () => {
-  if (!confirm('Xoá toàn bộ bản đồ? Không khôi phục lại được.')) return;
+  if (!confirm(T.confirmReset)) return;
   entries = [];
   try { localStorage.removeItem(KEY); } catch (err) {}
   recall.classList.remove('on');
@@ -523,6 +565,7 @@ document.getElementById('reset').addEventListener('click', () => {
   renderAll();
 });
 
+applyLang();
 load();
 trackVisit();
 </script>
