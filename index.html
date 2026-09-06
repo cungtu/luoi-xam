@@ -224,6 +224,35 @@
     margin-top:7px;
   }
 
+  .caption{
+    display:none;
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-weight:300;
+    font-size:clamp(18px,2.6vw,26px);
+    color:var(--bone);
+    text-align:center;
+    line-height:1.5;
+    max-width:24ch;
+    opacity:0;
+    transition:opacity .55s ease;
+  }
+  body.demo .caption{display:block}
+  .caption.on{opacity:1}
+  .caption.final{
+    font-style:normal;
+    font-family:"Be Vietnam Pro",sans-serif;
+    font-size:clamp(13px,1.6vw,16px);
+    letter-spacing:.03em;
+    color:var(--dim);
+    max-width:34ch;
+  }
+
+  body.demo .composer,
+  body.demo .hint,
+  body.demo .recall,
+  body.demo .reset{display:none}
+
   .reset{
     position:fixed;
     bottom:12px;
@@ -263,6 +292,7 @@
       </button>
     </form>
     <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi gửi đi.</p>
+    <p class="caption" id="caption" aria-hidden="true"></p>
     <p class="recall" id="recall" aria-live="polite"></p>
   </div>
 
@@ -304,7 +334,17 @@ const STR = {
     goLabel:     'Ghi lại',
     boardLabel:  'Bản đồ của bạn',
     reset:       'xoá tất cả',
-    confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.'
+    confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.',
+    /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
+    demo: [
+      'Tôi từ chối đi nhậu với sếp.',
+      'Tôi nói ra điều mình thật sự nghĩ.',
+      'Tôi về sớm, không xin lỗi ai.',
+      'Tôi đi một con đường khác về nhà.',
+      'Tôi bỏ dở cuốn sách mình không thích.',
+      'Tôi ngồi im một lúc lâu.'
+    ],
+    demoEnd: 'Một ngày, một điều. Sau một tháng, không có hai bản đồ nào giống nhau.'
   },
   en: {
     prefix:      'Today I',
@@ -314,11 +354,23 @@ const STR = {
     goLabel:     'Save',
     boardLabel:  'Your map',
     reset:       'erase everything',
-    confirmReset:'Erase the whole map? This cannot be undone.'
+    confirmReset:'Erase the whole map? This cannot be undone.',
+    /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
+    demo: [
+      'I said no to drinks with my boss.',
+      'I said what I actually thought.',
+      'I left early and did not apologise.',
+      'I walked home a different way.',
+      'I put down a book I was not enjoying.',
+      'I sat still for a long time.'
+    ],
+    demoEnd: 'One day, one thing. After a month, no two maps look the same.'
   }
 };
 
-const forced = new URLSearchParams(location.search).get('lang');
+const params = new URLSearchParams(location.search);
+const DEMO   = params.has('demo');
+const forced = params.get('lang');
 const LANG = (forced === 'vi' || forced === 'en')
   ? forced
   : (navigator.language || 'vi').toLowerCase().startsWith('vi') ? 'vi' : 'en';
@@ -449,6 +501,7 @@ function addEntry(text){
   entries.push(e);
   paint(e, true);
   hint.classList.add('gone');
+  if (DEMO) return;
   save();
   trackMilestone(entries.length);
 }
@@ -490,6 +543,47 @@ function trackMilestone(n){
   if (n === 3) track('viet/lan-3',  'Viết đến câu thứ 3');
   if (n === 7) track('viet/lan-7',  'Viết đến câu thứ 7');
   if (n === 20) track('viet/lan-20', 'Viết đến câu thứ 20');
+}
+
+/* ---------- chế độ quay video (?demo) ---------- */
+
+function runDemo(){
+  document.body.classList.add('demo');
+  const caption = document.getElementById('caption');
+  const lines = T.demo;
+  const gaps  = [2800, 1600, 1150, 900, 700, 560];
+  let i = 0;
+
+  function say(text, hold){
+    caption.textContent = text;
+    caption.classList.add('on');
+    setTimeout(() => caption.classList.remove('on'), hold);
+  }
+
+  function step(){
+    if (i < lines.length){
+      addEntry(lines[i]);
+      const gap = gaps[Math.min(i, gaps.length - 1)];
+      say(lines[i], gap - 320);
+      i++;
+      setTimeout(step, gap);
+    } else {
+      setTimeout(finale, 500);
+    }
+  }
+
+  function finale(){
+    caption.classList.add('final');
+    say(T.demoEnd, 60000);
+    let n = 0;
+    const timer = setInterval(() => {
+      addEntry('');
+      if (++n >= 20) clearInterval(timer);
+    }, 170);
+  }
+
+  document.addEventListener('click', () => location.reload());
+  setTimeout(step, 1000);
 }
 
 /* ---------- storage ---------- */
@@ -566,8 +660,13 @@ document.getElementById('reset').addEventListener('click', () => {
 });
 
 applyLang();
-load();
-trackVisit();
+if (DEMO){
+  renderAll();
+  runDemo();
+} else {
+  load();
+  trackVisit();
+}
 </script>
 </body>
 </html>
