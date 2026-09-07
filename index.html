@@ -224,6 +224,40 @@
     margin-top:7px;
   }
 
+  .edit-btn{
+    display:inline-block;
+    margin-top:8px;
+    background:none;
+    border:none;
+    color:var(--dim);
+    font-family:"Be Vietnam Pro",sans-serif;
+    font-size:11px;
+    letter-spacing:.05em;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+    padding:4px;
+    transition:color .3s ease;
+  }
+  .edit-btn:hover{color:var(--bone)}
+
+  .edit-input{
+    display:block;
+    width:100%;
+    max-width:46ch;
+    margin:0 auto;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--ash-line);
+    outline:none;
+    color:var(--bone);
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-size:15px;
+    text-align:center;
+    padding-bottom:6px;
+  }
+
   .caption{
     display:none;
     font-family:"Fraunces",Georgia,serif;
@@ -335,6 +369,9 @@ const STR = {
     boardLabel:  'Bản đồ của bạn',
     reset:       'xoá tất cả',
     confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.',
+    edit:        'sửa',
+    editLabel:   'Sửa điều này',
+    editInputLabel:'Sửa điều bạn đã viết',
     /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
     demo: [
       'Tôi dẫn ông anh khó tính đi ăn quán mình thích.',
@@ -355,6 +392,9 @@ const STR = {
     boardLabel:  'Your map',
     reset:       'erase everything',
     confirmReset:'Erase the whole map? This cannot be undone.',
+    edit:        'edit',
+    editLabel:   'Edit this',
+    editInputLabel:'Edit what you wrote',
     /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
     demo: [
       'I took my difficult older brother to a restaurant I like.',
@@ -506,12 +546,69 @@ function addEntry(text){
   trackMilestone(entries.length);
 }
 
+let recallEntry = null;
+
 function showRecall(e){
-  recall.innerHTML = `“${e.text}”<span class="when">${fmtDate(e.ts)}</span>`;
+  recallEntry = e;
+  renderRecallView();
   recall.classList.add('on');
-  clearTimeout(showRecall.t);
-  showRecall.t = setTimeout(() => recall.classList.remove('on'), 7000);
+  restartRecallTimer();
 }
+
+function restartRecallTimer(){
+  clearTimeout(showRecall.t);
+  showRecall.t = setTimeout(() => { recall.classList.remove('on'); recallEntry = null; }, 7000);
+}
+
+function renderRecallView(){
+  const e = recallEntry;
+  recall.innerHTML = '';
+  const quote = document.createElement('span');
+  quote.textContent = `“${e.text}”`;
+  const when = document.createElement('span');
+  when.className = 'when';
+  when.textContent = fmtDate(e.ts);
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button';
+  editBtn.className = 'edit-btn';
+  editBtn.textContent = T.edit;
+  editBtn.setAttribute('aria-label', T.editLabel);
+  recall.append(quote, when, editBtn);
+}
+
+function renderRecallEdit(){
+  const e = recallEntry;
+  clearTimeout(showRecall.t);
+  recall.innerHTML = '';
+  const box = document.createElement('input');
+  box.className = 'edit-input';
+  box.type = 'text';
+  box.value = e.text;
+  box.setAttribute('aria-label', T.editInputLabel);
+  recall.appendChild(box);
+  box.focus();
+  box.setSelectionRange(box.value.length, box.value.length);
+  box.addEventListener('keydown', ev => {
+    if (ev.key === 'Enter'){
+      const v = box.value.trim();
+      if (v){
+        e.text = v;
+        save();
+        const tile = board.children[e.tile];
+        if (tile) tile.setAttribute('aria-label', v);
+      }
+      renderRecallView();
+      restartRecallTimer();
+    } else if (ev.key === 'Escape'){
+      renderRecallView();
+      restartRecallTimer();
+    }
+  });
+}
+
+recall.addEventListener('click', ev => {
+  if (ev.target.closest('.edit-btn') && recallEntry) renderRecallEdit();
+});
 
 /* ---------- đo lường ----------
    Chỉ gửi đi những sự kiện ẩn danh dưới đây.
@@ -654,6 +751,8 @@ document.getElementById('reset').addEventListener('click', () => {
   if (!confirm(T.confirmReset)) return;
   entries = [];
   try { localStorage.removeItem(KEY); } catch (err) {}
+  clearTimeout(showRecall.t);
+  recallEntry = null;
   recall.classList.remove('on');
   hint.classList.remove('gone');
   renderAll();
