@@ -83,7 +83,7 @@ Chỉ số duy nhất đáng nhìn: bao nhiêu người còn quay lại từ ng�
 - Ít nhất **một người lạ quay lại đến ngày thứ ba** mà không có bất kỳ lời nhắc nào
 - **Cơ chế tự giải thích được.** Người nói tiếng Anh mở ra, không ai hướng dẫn, vẫn hiểu phải làm gì và viết đúng format
 
-**Lỗi đã sửa nhờ người dùng chỉ ra:** ô nhập không nằm trong `<form>` nên iOS hiện nút "xong" không kích hoạt được gửi (gần như mọi người dùng iPhone không viết được câu nào); không có cách xoá một dòng đơn lẻ, còn nút xoá tất cả thì để màu quá tối gần như tàng hình.
+**Lỗi đã sửa nhờ người dùng chỉ ra:** ô nhập không nằm trong `<form>` nên iOS hiện nút "xong" không kích hoạt được gửi (gần như mọi người dùng iPhone không viết được câu nào); không có cách sửa lại một câu đã viết sai, còn nút xoá tất cả thì để màu quá tối gần như tàng hình. Giải bằng nút "sửa" trên từng ô, không phải nút xoá riêng dòng — xoá từng dòng đi ngược triết lý "bản đồ không mất" của sản phẩm.
 
 Bài học chung: **không bao giờ để hành động chính phụ thuộc vào một phím bàn phím**, và luôn thử trên điện thoại thật sau mỗi thay đổi giao diện.
 
