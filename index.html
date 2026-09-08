@@ -9,6 +9,14 @@
 <meta property="og:title" content="Lưới xám">
 <meta property="og:description" content="A perfect gray grid. Each day you write one thing you did your own way, and a tile breaks free. After a month, no two maps look the same.">
 <meta property="og:type" content="website">
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Lưới xám">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap" rel="stylesheet">
@@ -41,6 +49,8 @@
     justify-content:center;
     gap:clamp(20px,4vh,44px);
     padding:clamp(16px,3vw,40px);
+    padding-bottom:calc(clamp(16px,3vw,40px) + env(safe-area-inset-bottom));
+    padding-top:calc(clamp(16px,3vw,40px) + env(safe-area-inset-top));
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
@@ -224,40 +234,6 @@
     margin-top:7px;
   }
 
-  .edit-btn{
-    display:inline-block;
-    margin-top:8px;
-    background:none;
-    border:none;
-    color:var(--dim);
-    font-family:"Be Vietnam Pro",sans-serif;
-    font-size:11px;
-    letter-spacing:.05em;
-    text-decoration:underline;
-    text-underline-offset:2px;
-    cursor:pointer;
-    padding:4px;
-    transition:color .3s ease;
-  }
-  .edit-btn:hover{color:var(--bone)}
-
-  .edit-input{
-    display:block;
-    width:100%;
-    max-width:46ch;
-    margin:0 auto;
-    background:none;
-    border:none;
-    border-bottom:1px solid var(--ash-line);
-    outline:none;
-    color:var(--bone);
-    font-family:"Fraunces",Georgia,serif;
-    font-style:italic;
-    font-size:15px;
-    text-align:center;
-    padding-bottom:6px;
-  }
-
   .caption{
     display:none;
     font-family:"Fraunces",Georgia,serif;
@@ -287,21 +263,82 @@
   body.demo .recall,
   body.demo .reset{display:none}
 
+  .install{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:6px 14px;
+    max-width:40ch;
+    padding:11px 16px;
+    border:1px solid var(--ash-line);
+    border-radius:2px;
+    background:rgba(43,49,59,.35);
+    text-align:center;
+  }
+  .install[hidden]{display:none}
+  body.demo .install{display:none}
+  .install-text{font-size:12.5px;color:var(--bone);line-height:1.5}
+  .install-acts{display:flex;gap:14px;flex:0 0 auto}
+  .install-yes,.install-no{
+    background:none;border:none;cursor:pointer;padding:2px 1px;
+    font-family:inherit;font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;transition:color .25s ease;
+  }
+  .install-yes{color:#5FBF9E;border-bottom:1px solid rgba(95,191,158,.4)}
+  .install-yes:hover{color:#8FDCC2}
+  .install-no{color:var(--dim)}
+  .install-no:hover{color:var(--bone)}
+
+  .edit-btn{
+    display:block;
+    margin:10px auto 0;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--ash-line);
+    color:var(--dim);
+    font-family:"Be Vietnam Pro",sans-serif;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:2px 1px;
+    cursor:pointer;
+    transition:color .25s ease, border-color .25s ease;
+  }
+  .edit-btn:hover{color:var(--bone);border-bottom-color:var(--dim)}
+
+  .edit-input{
+    display:block;
+    width:100%;
+    max-width:46ch;
+    margin:0 auto;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--ash-line);
+    outline:none;
+    color:var(--bone);
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-size:15px;
+    text-align:center;
+    padding-bottom:6px;
+  }
+
   .reset{
     position:fixed;
     bottom:12px;
     right:14px;
     background:none;
     border:none;
-    color:#333A45;
+    color:var(--dim);
     font-family:inherit;
-    font-size:11px;
+    font-size:12px;
     letter-spacing:.05em;
     cursor:pointer;
-    padding:6px;
+    padding:8px;
     transition:color .3s ease;
   }
-  .reset:hover{color:var(--dim)}
+  .reset:hover{color:var(--bone)}
 
   :focus-visible{outline:1px solid var(--bone);outline-offset:3px}
 
@@ -327,6 +364,14 @@
     </form>
     <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi gửi đi.</p>
     <p class="caption" id="caption" aria-hidden="true"></p>
+    <div class="install" id="install" hidden>
+      <span class="install-text" id="install-text"></span>
+      <span class="install-acts">
+        <button type="button" class="install-yes" id="install-yes"></button>
+        <button type="button" class="install-no"  id="install-no"></button>
+      </span>
+    </div>
+
     <p class="recall" id="recall" aria-live="polite"></p>
   </div>
 
@@ -368,18 +413,22 @@ const STR = {
     goLabel:     'Ghi lại',
     boardLabel:  'Bản đồ của bạn',
     reset:       'xoá tất cả',
-    confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.',
     edit:        'sửa',
     editLabel:   'Sửa điều này',
     editInputLabel:'Sửa điều bạn đã viết',
+    installAsk:  'Thêm vào màn hình chính để không quên nó.',
+    installBtn:  'thêm',
+    installLater:'để sau',
+    installIOS:  'Bấm nút chia sẻ ở thanh dưới, rồi chọn “Thêm vào Màn hình chính”.',
+    confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.',
     /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
     demo: [
-      'Tôi dẫn ông anh khó tính đi ăn quán mình thích.',
-      'Tôi khao anh chị họ ăn kem, chỉ để hiểu họ hơn.',
-      'Tôi đọc lại thứ mình ngại học, hai lần, rồi ghi ra.',
-      'Tôi mua sim giúp chị họ.',
-      'Tôi ngồi nói chuyện với các bác lâu hơn mọi khi.',
-      'Tôi tự lên lịch một tháng cho riêng mình.'
+      'Tôi từ chối đi nhậu với sếp.',
+      'Tôi nói ra điều mình thật sự nghĩ.',
+      'Tôi về sớm, không xin lỗi ai.',
+      'Tôi đi một con đường khác về nhà.',
+      'Tôi bỏ dở cuốn sách mình không thích.',
+      'Tôi ngồi im một lúc lâu.'
     ],
     demoEnd: 'Một ngày, một điều. Sau một tháng, không có hai bản đồ nào giống nhau.'
   },
@@ -391,18 +440,22 @@ const STR = {
     goLabel:     'Save',
     boardLabel:  'Your map',
     reset:       'erase everything',
-    confirmReset:'Erase the whole map? This cannot be undone.',
     edit:        'edit',
     editLabel:   'Edit this',
     editInputLabel:'Edit what you wrote',
+    installAsk:  'Put it on your home screen so you do not forget it.',
+    installBtn:  'add',
+    installLater:'later',
+    installIOS:  'Tap the share button below, then choose “Add to Home Screen”.',
+    confirmReset:'Erase the whole map? This cannot be undone.',
     /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
     demo: [
-      'I took my difficult older brother to a restaurant I like.',
-      'I bought my cousins ice cream, just to understand them better.',
-      'I reread the thing I was afraid to learn, twice, and wrote it down.',
-      'I helped my cousin get a SIM card.',
-      'I sat and talked with my uncles longer than usual.',
-      'I made a month-long plan just for myself.'
+      'I said no to drinks with my boss.',
+      'I said what I actually thought.',
+      'I left early and did not apologise.',
+      'I walked home a different way.',
+      'I put down a book I was not enjoying.',
+      'I sat still for a long time.'
     ],
     demoEnd: 'One day, one thing. After a month, no two maps look the same.'
   }
@@ -544,6 +597,11 @@ function addEntry(text){
   if (DEMO) return;
   save();
   trackMilestone(entries.length);
+  maybeOfferInstall();
+}
+
+function esc(s){
+  return s.replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 
 let recallEntry = null;
@@ -557,23 +615,19 @@ function showRecall(e){
 
 function restartRecallTimer(){
   clearTimeout(showRecall.t);
-  showRecall.t = setTimeout(() => { recall.classList.remove('on'); recallEntry = null; }, 7000);
+  showRecall.t = setTimeout(() => { recall.classList.remove('on'); recallEntry = null; }, 12000);
 }
 
 function renderRecallView(){
   const e = recallEntry;
-  recall.innerHTML = '';
-  const quote = document.createElement('span');
-  quote.textContent = `“${e.text}”`;
-  const when = document.createElement('span');
-  when.className = 'when';
-  when.textContent = fmtDate(e.ts);
+  recall.innerHTML = `“${esc(e.text)}”<span class="when">${fmtDate(e.ts)}</span>`;
   const editBtn = document.createElement('button');
-  editBtn.type = 'button';
   editBtn.className = 'edit-btn';
+  editBtn.type = 'button';
   editBtn.textContent = T.edit;
   editBtn.setAttribute('aria-label', T.editLabel);
-  recall.append(quote, when, editBtn);
+  editBtn.addEventListener('click', renderRecallEdit);
+  recall.appendChild(editBtn);
 }
 
 function renderRecallEdit(){
@@ -606,10 +660,6 @@ function renderRecallEdit(){
   });
 }
 
-recall.addEventListener('click', ev => {
-  if (ev.target.closest('.edit-btn') && recallEntry) renderRecallEdit();
-});
-
 /* ---------- đo lường ----------
    Chỉ gửi đi những sự kiện ẩn danh dưới đây.
    Nội dung người dùng viết KHÔNG bao giờ rời khỏi máy họ. */
@@ -640,6 +690,68 @@ function trackMilestone(n){
   if (n === 3) track('viet/lan-3',  'Viết đến câu thứ 3');
   if (n === 7) track('viet/lan-7',  'Viết đến câu thứ 7');
   if (n === 20) track('viet/lan-20', 'Viết đến câu thứ 20');
+}
+
+/* ---------- cài lên màn hình chính ---------- */
+
+const IKEY = 'luoixam:install-dismissed';
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true;
+let deferredPrompt = null;
+let installShown = false;
+
+window.addEventListener('beforeinstallprompt', ev => {
+  ev.preventDefault();
+  deferredPrompt = ev;
+});
+
+function dismissedInstall(){
+  try { return localStorage.getItem(IKEY) === '1'; } catch (e) { return false; }
+}
+
+function maybeOfferInstall(){
+  if (DEMO || standalone || installShown || dismissedInstall()) return;
+  if (entries.length < 2) return;
+  if (!deferredPrompt && !isIOS) return;   // trình duyệt không cài được thì thôi
+
+  installShown = true;
+  const bar  = document.getElementById('install');
+  const text = document.getElementById('install-text');
+  const yes  = document.getElementById('install-yes');
+  const no   = document.getElementById('install-no');
+
+  text.textContent = T.installAsk + (deferredPrompt ? '' : ' ' + T.installIOS);
+  no.textContent = T.installLater;
+
+  if (deferredPrompt){
+    yes.textContent = T.installBtn;
+    yes.addEventListener('click', async () => {
+      const p = deferredPrompt;
+      deferredPrompt = null;
+      bar.hidden = true;
+      p.prompt();
+      const res = await p.userChoice;
+      track('cai-dat/' + (res.outcome === 'accepted' ? 'dong-y' : 'tu-choi'),
+            'Cài lên màn hình chính');
+    });
+  } else {
+    yes.hidden = true;                      // iOS phải tự làm, không có nút
+  }
+
+  no.addEventListener('click', () => {
+    bar.hidden = true;
+    try { localStorage.setItem(IKEY, '1'); } catch (e) {}
+  });
+
+  bar.hidden = false;
+  track('cai-dat/hien-goi-y', 'Hiện gợi ý cài đặt');
+}
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
 }
 
 /* ---------- chế độ quay video (?demo) ---------- */
