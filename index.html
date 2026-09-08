@@ -211,6 +211,31 @@
   }
   .hint.gone{opacity:0}
 
+  .examples{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    justify-content:center;
+    gap:4px 8px;
+    max-width:52ch;
+    font-size:12px;
+    line-height:1.5;
+    color:var(--dim);
+  }
+  .examples[hidden]{display:none}
+  .example{
+    background:none;
+    border:none;
+    padding:2px 1px;
+    margin:0;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
+    transition:color .25s ease;
+  }
+  .example:hover{color:var(--bone)}
+  .example-dot{color:var(--dim)}
+
   .recall{
     font-family:"Fraunces",Georgia,serif;
     font-style:italic;
@@ -260,6 +285,7 @@
 
   body.demo .composer,
   body.demo .hint,
+  body.demo .examples,
   body.demo .recall,
   body.demo .reset{display:none}
 
@@ -362,6 +388,13 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m12 6 6 6-6 6"/></svg>
       </button>
     </form>
+    <p class="examples" id="examples">
+      <button type="button" class="example" data-i="0"></button>
+      <span class="example-dot" aria-hidden="true">·</span>
+      <button type="button" class="example" data-i="1"></button>
+      <span class="example-dot" aria-hidden="true">·</span>
+      <button type="button" class="example" data-i="2"></button>
+    </p>
     <p class="hint" id="hint">Một thế giới xám, đều tăm tắp. Viết một điều rồi gửi đi.</p>
     <p class="caption" id="caption" aria-hidden="true"></p>
     <div class="install" id="install" hidden>
@@ -421,6 +454,11 @@ const STR = {
     installLater:'để sau',
     installIOS:  'Bấm nút chia sẻ ở thanh dưới, rồi chọn “Thêm vào Màn hình chính”.',
     confirmReset:'Xoá toàn bộ bản đồ? Không khôi phục lại được.',
+    examples: [
+      'mua sim giúp chị họ',
+      'đi một con đường khác về nhà',
+      'ngồi im một lúc lâu'
+    ],
     /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
     demo: [
       'Tôi từ chối đi nhậu với sếp.',
@@ -448,6 +486,11 @@ const STR = {
     installLater:'later',
     installIOS:  'Tap the share button below, then choose “Add to Home Screen”.',
     confirmReset:'Erase the whole map? This cannot be undone.',
+    examples: [
+      'helped my cousin get a SIM card',
+      'walked home a different way',
+      'sat still for a long time'
+    ],
     /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
     demo: [
       'I said no to drinks with my boss.',
@@ -475,6 +518,7 @@ const board = document.getElementById('board');
 const input = document.getElementById('entry');
 const hint  = document.getElementById('hint');
 const recall= document.getElementById('recall');
+const examples = document.getElementById('examples');
 
 /* ---------- helpers ---------- */
 
@@ -517,6 +561,13 @@ function applyLang(){
   board.setAttribute('aria-label', T.boardLabel);
   document.querySelector('.go').setAttribute('aria-label', T.goLabel);
   document.getElementById('reset').textContent = T.reset;
+  document.querySelectorAll('.example').forEach((btn, i) => {
+    btn.textContent = T.examples[i];
+  });
+}
+
+function updateExamples(){
+  examples.hidden = entries.length > 0;
 }
 
 /* ---------- render ---------- */
@@ -574,6 +625,7 @@ function renderAll(){
   buildBoard();
   entries.forEach(e => paint(e, false));
   if (entries.length) hint.classList.add('gone');
+  updateExamples();
 }
 
 /* ---------- actions ---------- */
@@ -594,6 +646,7 @@ function addEntry(text){
   entries.push(e);
   paint(e, true);
   hint.classList.add('gone');
+  updateExamples();
   if (DEMO) return;
   save();
   trackMilestone(entries.length);
@@ -841,6 +894,15 @@ let touched = false;
 input.addEventListener('focus', () => {
   if (!touched){ touched = true; track('cua-vao/cham-o-nhap', 'Chạm vào ô nhập'); }
   setTimeout(() => input.scrollIntoView({ block:'nearest', behavior:'smooth' }), 350);
+});
+
+document.querySelectorAll('.example').forEach(btn => {
+  btn.addEventListener('click', () => {
+    input.value = btn.textContent;
+    composer.classList.add('ready');
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
 });
 
 board.addEventListener('click', ev => {
