@@ -50,7 +50,9 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - Viết một câu rồi gửi (Enter hoặc nút mũi tên) → một ô vỡ ra
 - **Đất mọc liền nhau**: ô đầu tiên ở giữa, mỗi ô sau chọn ngẫu nhiên trong các ô kề với vùng đã tự do. Điều này biến những mẩu rời rạc thành một hòn đảo. Đừng đổi thành random toàn cục.
 - Ô tự do: bo góc ngẫu nhiên thành hình hữu cơ, xoay nhẹ, màu từ `PALETTE`, mầm SVG từ `SPROUTS`, thở rất chậm
-- Chạm vào ô tự do → hiện lại câu đã viết, ngày viết, và nút xoá riêng dòng đó
+- Chạm vào ô tự do → hiện lại câu đã viết, ngày viết, và nút "sửa" để chỉnh lại câu (không xoá được từng dòng — chỉ "xoá tất cả" ở góc màn hình)
+- Ba ví dụ tầm thường hiện dưới ô nhập, hạ ngưỡng cho người viết lần đầu. Chạm vào điền thẳng vào ô nhập. Ẩn hẳn khi đã có từ một ghi chép trở lên
+- **Rễ**: ghi chép tạo hơn `ROOT_DAYS` (mặc định 7) ngày trước và chưa từng "nhìn lại" thì nhìn lại được. Mỗi lần mở app, chọn ngẫu nhiên đúng một ghi chép đủ điều kiện, đánh dấu bằng chấm sáng rất nhỏ. Ba trạng thái hiển thị: mầm non (mới, <7 ngày) → có rễ (đã nhìn lại, đứng vững) → nghiêng dần (quá hạn chưa nhìn lại — không đổ, không mất). Sau câu đầu tiên, hiện một dòng một-lần-duy-nhất báo trước "N ngày nữa, điều này sẽ quay lại hỏi bạn". `?rootdays=0` ép mọi ghi chép đủ điều kiện ngay, dùng khi test
 - Lưu bằng `localStorage`, key `luoixam:v1`
 - Song ngữ Việt/Anh, tự nhận theo `navigator.language`. Ép bằng `?lang=vi` hoặc `?lang=en`
 - `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường
@@ -70,6 +72,7 @@ GoatCounter (`luoixam`), không cookie. Sự kiện:
 - `cua-vao/cham-o-nhap` — lần đầu chạm vào ô nhập
 - `viet/lan-N` — mốc câu thứ 1, 3, 7, 20
 - `cai-dat/hien-goi-y`, `cai-dat/dong-y`, `cai-dat/tu-choi`
+- `re/hien-loi-moi` — lời mời "nhìn lại" xuất hiện; `re/da-nhin-lai` — đã viết xong "nhìn lại". So hai số này để biết bao nhiêu người thấy lời mời rồi thật sự trả lời
 
 **Nội dung người dùng viết không bao giờ rời khỏi máy họ.** Ràng buộc cứng. Điều này đã được hứa công khai với người dùng trên Reddit — không được vi phạm dù vì lý do gì.
 
@@ -94,45 +97,6 @@ Bài học chung: **không bao giờ để hành động chính phụ thuộc v�
 **Số liệu đang bẩn** vì thiết bị của người làm lẫn vào — thấy rõ qua việc `viet/lan-3` nhiều hơn `viet/lan-1`, điều bất khả về logic. Cần cơ chế `?notrack` để loại thiết bị của mình ra.
 
 ## Chưa làm — đừng tự làm
-
-### Ví dụ dưới ô nhập (đã chốt, làm trước rễ)
-
-Nhắm thẳng vào chỗ rò rỉ lớn nhất hiện nay: người chạm vào ô nhập rồi không viết gì.
-
-Ba ví dụ hiện ngay dưới ô nhập, chữ mờ, nhỏ hơn ô nhập, ngăn nhau bằng dấu chấm giữa. Trông như ai đó vừa viết xong, không phải một danh sách gợi ý chính thức.
-
-- Tiếng Việt: mua sim giúp chị họ · đi một con đường khác về nhà · ngồi im một lúc lâu
-- Tiếng Anh: helped my cousin get a SIM card · walked home a different way · sat still for a long time
-
-Chạm vào một ví dụ thì **điền luôn chữ đó vào ô nhập** và đưa con trỏ vào cuối câu — để người dùng sửa thành chuyện của họ, không phải gửi nguyên si. Đây là chi tiết quan trọng nhất: nó biến ví dụ từ thứ để đọc thành thứ để bắt đầu, và rào cản màn hình trắng biến mất.
-
-Ẩn hẳn khi người dùng đã có từ một ghi chép trở lên. Chúng chỉ phục vụ lần đầu.
-
-Đặt trong `STR` như mọi chuỗi khác.
-
-**Không đổi ví dụ thành thứ nghe hay hơn.** Chúng cố ý tầm thường. Mục đích là hạ ngưỡng, không phải truyền cảm hứng — một ví dụ kiểu "tự làm sản phẩm cá nhân" sẽ khiến người đọc nghĩ việc của mình chưa đủ xứng đáng, đúng thứ đang làm họ bỏ đi. Ví dụ thứ ba thậm chí không phải một hành động, và đó là chủ ý.
-
-Đo bằng tỉ lệ `cua-vao/cham-o-nhap` → `viet/lan-1`. Hiện tại 4/9 ≈ 44%. Đổi một thứ này thôi, đừng đổi gì khác cùng lúc.
-
-### Rễ (sau ví dụ dưới ô nhập)
-
-Cơ chế đã thiết kế xong nhưng **chưa code**. Đây là thứ duy nhất trong toàn bộ thiết kế sinh ra để tạo lý do quay lại.
-
-Người dùng có hai hành động ở hai tốc độ khác nhau.
-
-*Hành động* — viết một điều tự do hôm nay. Mỗi ngày. Phá một sợi xích, một ô vỡ ra, mọc mầm.
-
-*Nhìn lại* — mở lại một ghi chép cũ và viết chuyện đó dẫn tới đâu. Chỉ với ghi chép đã tạo **hơn 7 ngày trước** và chưa từng nhìn lại. Mỗi ghi chép một lần. Việc này làm **rễ** mọc dưới ô đất đó.
-
-Ô có rễ thì cây đứng vững. Ô không rễ vẫn mọc — nhanh và cao hơn — rồi nghiêng dần và ngừng lớn. **Không đổ, không mất, không lây sang ô khác.** Cơ chế trừng phạt tạo cảm giác tội lỗi, và tội lỗi khiến người ta bỏ app. Ngày nào người dùng quay lại viết, rễ mọc, cây đứng thẳng lên.
-
-Ý nghĩa: tự do cần hiểu biết, mà hiểu biết không mua được bằng nỗ lực — chỉ có thể chờ và để ý.
-
-Không được làm danh sách các ghi chép đang chờ nhìn lại. Mỗi lần vào app, lấy **ngẫu nhiên một** ghi chép đủ điều kiện và chỉ hiện đúng cái đó. Không đếm được thì không có gì để dọn.
-
-Con số 7 ngày là phỏng đoán, phải để thành biến cấu hình.
-
-Lưu ý khi làm: rễ cần 7 ngày mới xuất hiện, nên người mở lần đầu không thấy gì. Phải cho họ **biết trước** là có thứ đang chờ — một dòng nhỏ kiểu "bảy ngày nữa, điều này sẽ quay lại hỏi bạn". Lời hứa cũng là một lý do để quay lại.
 
 ### Xích hiển thị
 
