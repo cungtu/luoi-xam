@@ -839,8 +839,14 @@ function showRecall(e){
 function restartRecallTimer(){
   clearTimeout(showRecall.t);
   // Đang có câu hỏi "nhìn lại" chờ trả lời — đừng tự ẩn khi họ còn đang nghĩ.
-  if (recallEntry && isReflectable(recallEntry)) return;
+  if (recallEntry && canReflectNow(recallEntry)) return;
   showRecall.t = setTimeout(() => { recall.classList.remove('on'); recallEntry = null; }, 12000);
+}
+
+// Chỉ đúng MỘT ghi chép được chọn mỗi phiên (cueEntry) mới hiện câu hỏi
+// "nhìn lại" — chạm vào ô đủ điều kiện khác chỉ xem lại như bình thường.
+function canReflectNow(e){
+  return e === cueEntry && isReflectable(e);
 }
 
 function renderRecallView(){
@@ -854,7 +860,7 @@ function renderRecallView(){
   editBtn.addEventListener('click', renderRecallEdit);
   recall.appendChild(editBtn);
 
-  if (isReflectable(e)){
+  if (canReflectNow(e)){
     const wrap = document.createElement('span');
     wrap.className = 'reflect';
     const q = document.createElement('span');
