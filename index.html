@@ -575,7 +575,7 @@ const STR = {
       'Tôi bỏ dở cuốn sách mình không thích.',
       'Tôi ngồi im một lúc lâu.'
     ],
-    demoEnd: 'Một ngày, một điều. Sau một tháng, không có hai bản đồ nào giống nhau.'
+    demoEnd: 'Mỗi điều bạn làm theo ý mình phá vỡ một ô vuông'
   },
   en: {
     prefix:      'Today I',
@@ -1018,7 +1018,67 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
   });
 }
 
-/* ---------- chế độ quay video (?demo) ---------- */
+/* ---------- chế độ quay video (?demo) ----------
+   Âm thanh tổng hợp bằng Web Audio, không file, không dependency.
+   Trình duyệt chặn âm thanh tới khi có một cử chỉ người dùng trên
+   trang — bấm một cái trước khi bắt đầu quay nếu không nghe thấy gì. */
+
+let demoAudioCtx = null;
+
+function demoAC(){
+  if (!demoAudioCtx){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    demoAudioCtx = new Ctx();
+  }
+  if (demoAudioCtx.state === 'suspended') demoAudioCtx.resume().catch(() => {});
+  return demoAudioCtx;
+}
+
+function startHum(){
+  const ctx = demoAC();
+  if (!ctx) return null;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 55;
+  gain.gain.value = 0;
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  gain.gain.linearRampToValueAtTime(0.045, ctx.currentTime + 0.8);
+  return { osc, gain };
+}
+
+function stopHum(hum){
+  const ctx = demoAC();
+  if (!ctx || !hum) return;
+  const now = ctx.currentTime;
+  hum.gain.gain.cancelScheduledValues(now);
+  hum.gain.gain.setValueAtTime(hum.gain.gain.value, now);
+  hum.gain.gain.linearRampToValueAtTime(0, now + 0.25);
+  hum.osc.stop(now + 0.3);
+}
+
+// Tiếng ô vỡ: ô đầu vang nhất, các ô sau nhỏ dần và cao độ nhích lên —
+// người xem nghe ra một thứ đang đi lên mà không cần ý thức vì sao.
+function crack(i){
+  const ctx = demoAC();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const freq = 300 * Math.pow(1.05, i);
+  const peak = Math.max(0.05, 0.5 * Math.pow(0.82, i));
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq * 1.6, now);
+  osc.frequency.exponentialRampToValueAtTime(freq, now + 0.09);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(peak, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.16);
+}
 
 function runDemo(){
   document.body.classList.add('demo');
@@ -1026,6 +1086,7 @@ function runDemo(){
   const lines = T.demo;
   const gaps  = [2800, 1600, 1150, 900, 700, 560];
   let i = 0;
+  const hum = startHum();
 
   function say(text, hold){
     caption.textContent = text;
@@ -1035,6 +1096,7 @@ function runDemo(){
 
   function step(){
     if (i < lines.length){
+      crack(i);
       addEntry(lines[i]);
       const gap = gaps[Math.min(i, gaps.length - 1)];
       say(lines[i], gap - 320);
@@ -1046,6 +1108,7 @@ function runDemo(){
   }
 
   function finale(){
+    stopHum(hum);
     caption.classList.add('final');
     say(T.demoEnd, 60000);
     let n = 0;
@@ -1056,7 +1119,7 @@ function runDemo(){
   }
 
   document.addEventListener('click', () => location.reload());
-  setTimeout(step, 1000);
+  setTimeout(step, 2000);
 }
 
 /* ---------- storage ---------- */
