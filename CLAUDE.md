@@ -49,13 +49,13 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - Lưới cố định 18 × 12 = 216 ô, tỉ lệ 3:2, co giãn theo màn hình
 - Viết một câu rồi gửi (Enter hoặc nút mũi tên) → một ô vỡ ra
 - **Đất mọc liền nhau**: ô đầu tiên ở giữa, mỗi ô sau chọn ngẫu nhiên trong các ô kề với vùng đã tự do. Điều này biến những mẩu rời rạc thành một hòn đảo. Đừng đổi thành random toàn cục.
-- Ô tự do: bo góc ngẫu nhiên thành hình hữu cơ, xoay nhẹ, màu từ `PALETTE`, mầm SVG từ `SPROUTS`, thở rất chậm
+- Ô tự do: mỗi ô có một "tính cách" bo góc riêng (10-85%, dao động quanh một giá trị nền) nên có ô gần vuông, ô méo lệch, ô tròn mềm — không phải tất cả đều tròn đều như huy hiệu. Xoay ngẫu nhiên ±18°, cỡ dao động 88-108%. Màu từ `PALETTE`, mầm SVG từ `SPROUTS` cũng xoay/co dãn riêng từng ô, thở rất chậm
 - Chạm vào ô tự do → hiện lại câu đã viết, ngày viết, và nút "sửa" để chỉnh lại câu (không xoá được từng dòng — chỉ "xoá tất cả" ở góc màn hình)
 - Ba ví dụ tầm thường hiện dưới ô nhập, hạ ngưỡng cho người viết lần đầu. Chạm vào điền thẳng vào ô nhập. Ẩn hẳn khi đã có từ một ghi chép trở lên
 - **Rễ**: ghi chép tạo hơn `ROOT_DAYS` (mặc định 7) ngày trước và chưa từng "nhìn lại" thì nhìn lại được. Mỗi lần mở app, chọn ngẫu nhiên đúng một ghi chép đủ điều kiện, đánh dấu bằng chấm sáng rất nhỏ. Ba trạng thái hiển thị: mầm non (mới, <7 ngày) → có rễ (đã nhìn lại, đứng vững) → nghiêng dần (quá hạn chưa nhìn lại — không đổ, không mất). Sau câu đầu tiên, hiện một dòng một-lần-duy-nhất báo trước "N ngày nữa, điều này sẽ quay lại hỏi bạn". `?rootdays=0` ép mọi ghi chép đủ điều kiện ngay, dùng khi test
 - Lưu bằng `localStorage`, key `luoixam:v1`
 - Song ngữ Việt/Anh, tự nhận theo `navigator.language`. Ép bằng `?lang=vi` hoặc `?lang=en`
-- `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường
+- `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường. Có tiếng tổng hợp bằng Web Audio (ù trầm nền, tách khi vỡ ô, cao độ nhích dần) — chỉ bật trong demo. Thêm `&doc` để quay dọc 9:16 cho TikTok: bản đồ full-width dồn lên trên, chừa 1/4 màn hình dưới trống cho UI TikTok, chữ lớn hơn hẳn
 - Cài lên màn hình chính được (manifest + service worker). Gợi ý cài hiện sau câu thứ hai, chỉ một lần, bỏ qua được vĩnh viễn
 
 ### Điểm nhấn thị giác

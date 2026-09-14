@@ -93,7 +93,7 @@
     background:var(--fill);
     border:1px solid var(--edge);
     border-radius:var(--blob);
-    transform:rotate(var(--rot));
+    transform:rotate(var(--rot)) scale(var(--scale,1));
     cursor:pointer;
   }
 
@@ -104,7 +104,7 @@
   @keyframes emerge{
     0%{transform:scale(1) rotate(0deg);border-radius:0}
     30%{transform:scale(1.5) rotate(-9deg)}
-    100%{transform:scale(1) rotate(var(--rot));border-radius:var(--blob)}
+    100%{transform:scale(var(--scale,1)) rotate(var(--rot));border-radius:var(--blob)}
   }
 
   .tile.shock .land{animation:shock .55s ease-out both;animation-delay:var(--d)}
@@ -124,7 +124,9 @@
   .sprout{
     width:66%;height:66%;overflow:visible;pointer-events:none;
     transform-origin:50% 100%;
-    transform:rotate(var(--lean,0deg)) scale(var(--grow,1));
+    transform:
+      rotate(calc(var(--lean,0deg) + var(--sprout-rot,0deg)))
+      scale(calc(var(--grow,1) * var(--sprout-scale,1)));
     transition:transform 1.1s ease;
   }
   .sprout path,.sprout circle{
@@ -353,6 +355,35 @@
   body.demo .examples,
   body.demo .recall,
   body.demo .reset{display:none}
+
+  /* ---------- quay dọc TikTok (?demo&doc) ----------
+     Bản đồ chiếm hết chiều rộng, dồn lên trên, chừa 1/4 chiều cao
+     dưới cùng trống hẳn cho phần giao diện TikTok đè lên. */
+  body.demo.doc{
+    justify-content:flex-start;
+    gap:2dvh;
+    padding:5dvh 4vw 25dvh;
+  }
+  body.demo.doc .below{
+    order:1;
+    width:100%;
+    max-width:none;
+  }
+  body.demo.doc .board-wrap{
+    order:2;
+    width:100%;
+    max-width:none;
+    margin-top:1dvh;
+  }
+  body.demo.doc .caption{
+    font-size:4.6dvh;
+    line-height:1.28;
+    max-width:96vw;
+  }
+  body.demo.doc .caption.final{
+    font-size:3.2dvh;
+    max-width:96vw;
+  }
 
   .install{
     display:flex;
@@ -616,6 +647,7 @@ const STR = {
 
 const params = new URLSearchParams(location.search);
 const DEMO   = params.has('demo');
+const DOC    = params.has('doc'); // ?demo&doc — khung dọc 9:16 để quay TikTok
 const forced = params.get('lang');
 const LANG = (forced === 'vi' || forced === 'en')
   ? forced
@@ -643,7 +675,10 @@ const examples = document.getElementById('examples');
 const rnd = (n) => Math.floor(Math.random() * n);
 
 function blob(){
-  const v = () => 42 + rnd(24);
+  // Mỗi ô có một "tính cách" nền (10-85%), các góc dao động quanh đó —
+  // ô gần vuông, ô méo lệch, ô tròn mềm, thay vì tất cả đều tròn đều.
+  const base = 10 + rnd(76);
+  const v = () => Math.max(10, Math.min(85, base + rnd(31) - 15));
   return `${v()}% ${v()}% ${v()}% ${v()}% / ${v()}% ${v()}% ${v()}% ${v()}%`;
 }
 
@@ -709,6 +744,9 @@ function paint(e, isNew){
   t.style.setProperty('--edge', p.edge);
   t.style.setProperty('--blob', e.blob);
   t.style.setProperty('--rot', e.rot + 'deg');
+  t.style.setProperty('--scale', e.scale ?? 1);
+  t.style.setProperty('--sprout-rot', (e.sproutRot ?? 0) + 'deg');
+  t.style.setProperty('--sprout-scale', e.sproutScale ?? 1);
   t.style.setProperty('--sway', (e.tile % 7) * 1.3 + 's');
   t.classList.add('free');
   t.setAttribute('tabindex', '0');
@@ -806,7 +844,10 @@ function addEntry(text){
     text, tile,
     ts: Date.now(),
     blob: blob(),
-    rot: rnd(17) - 8,
+    rot: rnd(37) - 18,                        // ±18°, trước là ±8°
+    scale: 0.88 + Math.random() * 0.20,        // 88–108%, mép đảo bớt đều
+    sproutRot: rnd(25) - 12,                   // mầm mỗi ô nghiêng khác nhau
+    sproutScale: 0.85 + Math.random() * 0.30,  // và cỡ khác nhau
     color: rnd(PALETTE.length),
     sprout: rnd(SPROUTS.length),
     reflection: null,
@@ -1065,23 +1106,38 @@ function crack(i){
   const ctx = demoAC();
   if (!ctx) return;
   const now = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  const freq = 300 * Math.pow(1.05, i);
-  const peak = Math.max(0.05, 0.5 * Math.pow(0.82, i));
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(freq * 1.6, now);
-  osc.frequency.exponentialRampToValueAtTime(freq, now + 0.09);
-  gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(peak, now + 0.008);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start(now);
-  osc.stop(now + 0.16);
+  const step = Math.pow(1.05, i);           // cao độ nhích lên mỗi ô sau
+  const peak = Math.max(0.05, 0.5 * Math.pow(0.82, i));  // nhỏ dần
+
+  // xung cao, tắt rất nhanh — cái "tách"
+  const hi = ctx.createOscillator();
+  const hiGain = ctx.createGain();
+  hi.type = 'triangle';
+  hi.frequency.setValueAtTime(1800 * step, now);
+  hi.frequency.exponentialRampToValueAtTime(650 * step, now + 0.03);
+  hiGain.gain.setValueAtTime(0.0001, now);
+  hiGain.gain.exponentialRampToValueAtTime(peak, now + 0.004);
+  hiGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+  hi.connect(hiGain).connect(ctx.destination);
+  hi.start(now);
+  hi.stop(now + 0.05);
+
+  // âm trầm ngắn lan ra ngay sau — cho tiếng tách có "thân"
+  const lo = ctx.createOscillator();
+  const loGain = ctx.createGain();
+  lo.type = 'sine';
+  lo.frequency.value = 170 * step;
+  loGain.gain.setValueAtTime(0.0001, now);
+  loGain.gain.exponentialRampToValueAtTime(peak * 0.7, now + 0.01);
+  loGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+  lo.connect(loGain).connect(ctx.destination);
+  lo.start(now);
+  lo.stop(now + 0.24);
 }
 
 function runDemo(){
   document.body.classList.add('demo');
+  if (DOC) document.body.classList.add('doc');
   const caption = document.getElementById('caption');
   const lines = T.demo;
   const gaps  = [2800, 1600, 1150, 900, 700, 560];
@@ -1109,6 +1165,10 @@ function runDemo(){
 
   function finale(){
     stopHum(hum);
+    // Từ đây là khung hình cuối — bỏ nút bấm-để-quay-lại để một cú bấm
+    // nhầm lúc sắp hết không làm mất take. Bản đồ giữ nguyên rất lâu
+    // (60 giây) sau khi time-lapse chạy xong, đủ để cắt video mượt.
+    document.removeEventListener('click', reloadOnClick);
     caption.classList.add('final');
     say(T.demoEnd, 60000);
     let n = 0;
@@ -1118,7 +1178,8 @@ function runDemo(){
     }, 170);
   }
 
-  document.addEventListener('click', () => location.reload());
+  function reloadOnClick(){ location.reload(); }
+  document.addEventListener('click', reloadOnClick);
   setTimeout(step, 2000);
 }
 
