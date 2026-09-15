@@ -62,6 +62,7 @@
     max-width:min(96vw, calc((100dvh - 240px) * 1.5), 1040px);
     aspect-ratio:3/2;
     position:relative;
+    overflow:hidden;
   }
 
   .board{
@@ -74,6 +75,8 @@
     background:var(--board);
     padding:var(--tile-gap);
     border:1px solid var(--ash-line);
+    transform-origin:0 0;
+    transition:transform 1.4s ease;
   }
 
   .tile{position:relative}
@@ -353,8 +356,10 @@
   body.demo .hint,
   body.demo .root-promise,
   body.demo .examples,
-  body.demo .recall,
   body.demo .reset{display:none}
+
+  /* ?demo=roots cần hiện lại .recall để chạy cảnh mở ô / gõ "nhìn lại" */
+  body.demo:not(.roots) .recall{display:none}
 
   /* ---------- quay dọc TikTok (?demo&doc) ----------
      Bản đồ chiếm hết chiều rộng, dồn lên trên, chừa 1/4 chiều cao
@@ -606,7 +611,26 @@ const STR = {
       'Tôi bỏ dở cuốn sách mình không thích.',
       'Tôi ngồi im một lúc lâu.'
     ],
-    demoEnd: 'Mỗi điều bạn làm theo ý mình phá vỡ một ô vuông'
+    demoEnd: 'Mỗi điều bạn làm theo ý mình phá vỡ một ô vuông',
+    /* ↓ ?demo=roots — mười ô của một người đã dùng mười ngày ↓ */
+    demoRoots: [
+      'Tôi từ chối đi nhậu với sếp.',
+      'Tôi nói ra điều mình thật sự nghĩ.',
+      'Tôi đi một con đường khác về nhà.',
+      'Tôi về sớm, không xin lỗi ai.',
+      'Tôi bỏ dở cuốn sách mình không thích.',
+      'Tôi ngồi im một lúc lâu.',
+      'Tôi tự nấu bữa tối một mình.',
+      'Tôi tắt điện thoại sớm hơn thường lệ.',
+      'Tôi đi dạo không mang theo gì.',
+      'Tôi để bụng đói một chút, không vội ăn ngay.'
+    ],
+    demoRootsReflect: [
+      'Nó không dẫn tới đâu to tát, nhưng tôi ngủ ngon hơn.',
+      'Người đó vẫn ổn. Tôi lo hơi thừa.',
+      'Tôi thấy một quán nhỏ tôi chưa từng để ý.'
+    ],
+    demoRootsAnswer: 'Không ai để ý cả. Tôi lo hơi thừa.'
   },
   en: {
     prefix:      'Today I',
@@ -641,12 +665,32 @@ const STR = {
       'I put down a book I was not enjoying.',
       'I sat still for a long time.'
     ],
-    demoEnd: 'One day, one thing. After a month, no two maps look the same.'
+    demoEnd: 'One day, one thing. After a month, no two maps look the same.',
+    /* ↓ ?demo=roots — ten tiles of someone who has used it for ten days ↓ */
+    demoRoots: [
+      'I said no to drinks with my boss.',
+      'I said what I actually thought.',
+      'I walked home a different way.',
+      'I left early and did not apologise.',
+      'I put down a book I was not enjoying.',
+      'I sat still for a long time.',
+      'I cooked dinner just for myself.',
+      'I turned my phone off earlier than usual.',
+      'I went for a walk without bringing anything.',
+      'I let myself feel hungry a while before eating.'
+    ],
+    demoRootsReflect: [
+      "It didn't lead anywhere big, but I slept better.",
+      'They were fine. I worried for nothing.',
+      "I noticed a small shop I'd never seen before."
+    ],
+    demoRootsAnswer: 'No one noticed. I worried for nothing.'
   }
 };
 
 const params = new URLSearchParams(location.search);
 const DEMO   = params.has('demo');
+const DEMO_ROOTS = params.get('demo') === 'roots'; // ?demo=roots — kịch bản riêng cho Rễ
 const DOC    = params.has('doc'); // ?demo&doc — khung dọc 9:16 để quay TikTok
 const forced = params.get('lang');
 const LANG = (forced === 'vi' || forced === 'en')
@@ -917,8 +961,10 @@ function renderRecallView(){
       if (!v) return;
       e.reflection = v;
       e.reflected_at = Date.now();
-      save();
-      track('re/da-nhin-lai', 'Đã nhìn lại');
+      if (!DEMO){
+        save();
+        track('re/da-nhin-lai', 'Đã nhìn lại');
+      }
       if (cueEntry === e) cueEntry = null;
       const tile = board.children[e.tile];
       if (tile) updateRootState(tile, e);
@@ -1135,6 +1181,116 @@ function crack(i){
   lo.stop(now + 0.24);
 }
 
+/* ---------- ?demo=roots — kịch bản riêng cho cơ chế Rễ ---------- */
+
+// Toạ độ tương đối quanh ô trung tâm (giống cách đảo mọc liền nhau thật),
+// nhưng đặt cứng để đảm bảo ô "hero" và ô "partner" luôn cạnh nhau —
+// cảnh cuối cần chắc chắn có một cặp rễ/nghiêng đứng sát nhau.
+const ROOTS_LAYOUT = [
+  { dr: 0,  dc: 0  }, { dr: 0,  dc: 1 }, { dr: 1,  dc: 0 },
+  { dr: 1,  dc: 1  }, { dr: 2,  dc: 1 }, { dr: 1,  dc: -1 },
+  { dr: 0,  dc: -1 }, { dr: -1, dc: -1 }, { dr: -1, dc: 0 },
+  { dr: -1, dc: 1  }
+];
+const ROOTS_DAYS_AGO = [25, 21, 15, 18, 14, 9, 6, 4, 2, 1];
+const ROOTS_REFLECTED_FROM_START = [0, 1, 2]; // đã nhìn lại từ trước, dùng T.demoRootsReflect
+const ROOTS_HERO = 3;     // ô sẽ được "mở ra" và trả lời ngay trong video
+const ROOTS_PARTNER = 4;  // ô cạnh hero, vẫn nghiêng suốt video — để đối chiếu ở cảnh cuối
+
+function buildRootsScenario(){
+  const centerR = Math.floor(ROWS / 2), centerC = Math.floor(COLS / 2);
+  entries = ROOTS_LAYOUT.map((pos, i) => {
+    const tile = (centerR + pos.dr) * COLS + (centerC + pos.dc);
+    const ts = Date.now() - ROOTS_DAYS_AGO[i] * 86400000;
+    const hasReflection = ROOTS_REFLECTED_FROM_START.includes(i);
+    return {
+      text: T.demoRoots[i],
+      tile, ts,
+      blob: blob(),
+      rot: rnd(37) - 18,
+      scale: 0.88 + Math.random() * 0.20,
+      sproutRot: rnd(25) - 12,
+      sproutScale: 0.85 + Math.random() * 0.30,
+      color: rnd(PALETTE.length),
+      sprout: rnd(SPROUTS.length),
+      reflection: hasReflection ? T.demoRootsReflect[i] : null,
+      reflected_at: hasReflection ? ts + rnd(3) * 86400000 : null
+    };
+  });
+}
+
+// Phóng to vào điểm giữa hai ô. Dùng transform-origin theo phần trăm thay vì
+// đo clientWidth/clientHeight — đo pixel tại đúng thời điểm gọi có thể trả
+// về 0 (chưa kịp layout), khiến zoom đứng yên; theo % thì luôn đúng.
+function zoomToPair(tileA, tileB, scaleK){
+  const fracOf = idx => ({
+    x: (idx % COLS + 0.5) / COLS * 100,
+    y: (Math.floor(idx / COLS) + 0.5) / ROWS * 100
+  });
+  const a = fracOf(tileA), b = fracOf(tileB);
+  const originX = (a.x + b.x) / 2, originY = (a.y + b.y) / 2;
+  board.style.transformOrigin = `${originX}% ${originY}%`;
+  board.style.transform = `scale(${scaleK})`;
+}
+
+function runRootsDemo(){
+  document.body.classList.add('demo', 'roots');
+  if (DOC) document.body.classList.add('doc');
+  buildRootsScenario();
+
+  const hero = entries[ROOTS_HERO], partner = entries[ROOTS_PARTNER];
+  cueEntry = hero;
+  buildBoard();
+  entries.forEach(e => paint(e, false));
+
+  function reloadOnClick(){ location.reload(); }
+  document.addEventListener('click', reloadOnClick);
+
+  // 1) chấm nhấp nháy trên ô cũ, rồi ô đó tự mở ra
+  function open(){
+    showRecall(hero);
+    setTimeout(type, 700);
+  }
+
+  // 2) câu trả lời gõ ra dần dần, như người thật đang viết
+  function type(){
+    const box = document.querySelector('.reflect-input');
+    if (!box) return;
+    const answer = T.demoRootsAnswer;
+    let n = 0;
+    const timer = setInterval(() => {
+      n++;
+      box.value = answer.slice(0, n);
+      if (n >= answer.length){
+        clearInterval(timer);
+        setTimeout(submit, 550);
+      }
+    }, 62);
+  }
+
+  // 3) gửi đi bằng đúng luồng thật — rễ mọc, cây đứng thẳng
+  function submit(){
+    const box = document.querySelector('.reflect-input');
+    if (box) box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    setTimeout(pullBack, 1800);
+  }
+
+  // 4) lùi ra — cất chữ đi, chỉ còn lại bản đồ
+  function pullBack(){
+    recall.classList.remove('on');
+    recallEntry = null;
+    setTimeout(zoom, 1000);
+  }
+
+  // 5) phóng to vào đúng cặp ô cạnh nhau: một có rễ, một đang nghiêng
+  function zoom(){
+    document.removeEventListener('click', reloadOnClick);
+    zoomToPair(hero.tile, partner.tile, 4);
+  }
+
+  setTimeout(open, 2000);
+}
+
 function runDemo(){
   document.body.classList.add('demo');
   if (DOC) document.body.classList.add('doc');
@@ -1271,7 +1427,9 @@ document.getElementById('reset').addEventListener('click', () => {
 });
 
 applyLang();
-if (DEMO){
+if (DEMO_ROOTS){
+  runRootsDemo();
+} else if (DEMO){
   renderAll();
   runDemo();
 } else {

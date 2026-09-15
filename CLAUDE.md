@@ -56,6 +56,7 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - Lưu bằng `localStorage`, key `luoixam:v1`
 - Song ngữ Việt/Anh, tự nhận theo `navigator.language`. Ép bằng `?lang=vi` hoặc `?lang=en`
 - `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường. Có tiếng tổng hợp bằng Web Audio (ù trầm nền, tách khi vỡ ô, cao độ nhích dần) — chỉ bật trong demo. Thêm `&doc` để quay dọc 9:16 cho TikTok: bản đồ full-width dồn lên trên, chừa 1/4 màn hình dưới trống cho UI TikTok, chữ lớn hơn hẳn
+- `?demo=roots` là kịch bản riêng cho cơ chế Rễ: dựng sẵn bản đồ mười ô như đã dùng mười ngày (ngày tạo lùi về quá khứ, tính cứng trong `ROOTS_LAYOUT`/`ROOTS_DAYS_AGO`, không dùng `nextTile` ngẫu nhiên — để đảm bảo có đúng một cặp ô cạnh nhau, một có rễ một đang nghiêng), rồi tự chạy: chấm nhấp nháy → mở ô → gõ câu trả lời dần dần → rễ mọc → lùi ra → phóng to vào đúng cặp ô đó, giữ khung hình. Dùng lại nguyên luồng "nhìn lại" thật (không phải giả lập riêng) nên cũng không ghi localStorage, không gửi sự kiện đo lường
 - Cài lên màn hình chính được (manifest + service worker). Gợi ý cài hiện sau câu thứ hai, chỉ một lần, bỏ qua được vĩnh viễn
 
 ### Điểm nhấn thị giác
