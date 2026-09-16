@@ -359,7 +359,7 @@
   body.demo .reset{display:none}
 
   /* ?demo=roots cần hiện lại .recall để chạy cảnh mở ô / gõ "nhìn lại" */
-  body.demo:not(.roots) .recall{display:none}
+  body.demo:not(.root-demo) .recall{display:none}
 
   /* ---------- quay dọc TikTok (?demo&doc) ----------
      Bản đồ chiếm hết chiều rộng, dồn lên trên, chừa 1/4 chiều cao
@@ -1234,7 +1234,7 @@ function zoomToPair(tileA, tileB, scaleK){
 }
 
 function runRootsDemo(){
-  document.body.classList.add('demo', 'roots');
+  document.body.classList.add('demo', 'root-demo');
   if (DOC) document.body.classList.add('doc');
   buildRootsScenario();
 

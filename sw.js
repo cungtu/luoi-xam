@@ -3,7 +3,7 @@
    Ảnh và manifest: ưu tiên cache cho nhanh.
    Đổi CACHE khi muốn ép mọi người tải lại toàn bộ. */
 
-const CACHE = 'luoixam-v1';
+const CACHE = 'luoixam-v2';
 
 const ASSETS = [
   './',
