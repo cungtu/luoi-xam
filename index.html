@@ -1252,40 +1252,40 @@ function runRootsDemo(){
     setTimeout(type, 700);
   }
 
-  // 2) câu trả lời gõ ra dần dần, như người thật đang viết
+  // 2) câu trả lời gõ ra dần dần, như người thật đang viết.
+  //    focus() + scrollLeft: input không thật sự được gõ (value gán
+  //    bằng JS) nên trình duyệt không tự cuộn theo con trỏ như gõ
+  //    thật — không cuộn thì chữ dài sẽ bị cắt mất phần đuôi.
   function type(){
     const box = document.querySelector('.reflect-input');
     if (!box) return;
+    box.focus();
     const answer = T.demoRootsAnswer;
     let n = 0;
     const timer = setInterval(() => {
       n++;
       box.value = answer.slice(0, n);
+      box.scrollLeft = box.scrollWidth;
       if (n >= answer.length){
         clearInterval(timer);
-        setTimeout(submit, 550);
+        setTimeout(zoomIn, 550);
       }
     }, 62);
   }
 
-  // 3) gửi đi bằng đúng luồng thật — rễ mọc, cây đứng thẳng
+  // 3) gõ xong — cất chữ đi, phóng ngay vào đúng cặp ô cạnh nhau
+  function zoomIn(){
+    recall.classList.remove('on');
+    zoomToPair(hero.tile, partner.tile, 4);
+    setTimeout(submit, 1500); // đợi camera đứng yên (transform 1.4s) rồi mới gửi
+  }
+
+  // 4) gửi đi bằng đúng luồng thật — rễ mọc ngay trước mắt lúc đang zoom
   function submit(){
     const box = document.querySelector('.reflect-input');
     if (box) box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
-    setTimeout(pullBack, 1800);
-  }
-
-  // 4) lùi ra — cất chữ đi, chỉ còn lại bản đồ
-  function pullBack(){
-    recall.classList.remove('on');
     recallEntry = null;
-    setTimeout(zoom, 1000);
-  }
-
-  // 5) phóng to vào đúng cặp ô cạnh nhau: một có rễ, một đang nghiêng
-  function zoom(){
     document.removeEventListener('click', reloadOnClick);
-    zoomToPair(hero.tile, partner.tile, 4);
   }
 
   setTimeout(open, 2000);
