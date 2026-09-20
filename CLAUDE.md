@@ -20,9 +20,46 @@ Câu trên là toàn bộ sản phẩm. Mọi quyết định thiết kế đề
 
 **Luật:** Khi người khác thấy bạn không suy nghĩ và hành động theo tiêu chí chung, một sợi xích xuất hiện trên người bạn — khiến bạn di chuyển khó hơn và suy nghĩ nặng nhọc hơn. Càng nhiều người cùng đánh giá bạn sai theo cùng một tiêu chí, sợi xích của tiêu chí đó càng lớn.
 
+**Lưới là phần chưa vỡ.** Những ô xám còn nguyên chính là cái lưới đang giam giữ. Ô vỡ ra là ô đã thoát khỏi nó. Người dùng không xây một tấm lưới — họ đang gỡ mình khỏi nó. Đừng kể ngược.
+
 **Hình ảnh trung tâm:** Một quả cầu trôi trong bóng tối. Bên trong là thế giới nhỏ đang ngủ. Ở giữa, một sinh vật vừa ngẩng lên, và chỗ nó đứng màu sắc bắt đầu loang ra. **Không có ai bên ngoài nhìn vào. Quả cầu tự sáng lên từ bên trong.**
 
 Câu cuối là ràng buộc đạo đức của cả sản phẩm: không có thực thể nào đứng trên người dùng để chấm điểm, hướng dẫn, hay chấp thuận họ.
+
+### Xích đến từ đâu
+
+Thời kỳ trước, loài người ở đây **không có ngôn ngữ**. Không nói được thì không dạy được, không dạy được thì không có "cách đúng", không có cách đúng thì không ai sai. Họ học bằng cách nhìn người khác làm, nên mỗi người tự rút ra một kiểu. Loài đó tiến hoá rất nhanh.
+
+Trạng thái ấy giống suy nghĩ của một đứa bé vừa sinh ra: chưa có đúng sai, chưa có xấu hổ, chưa có khái niệm kỳ lạ. **Mọi người đều đã từng sống ở đó. Chỉ là không ai nhớ.**
+
+Thứ khiến ngôn ngữ xuất hiện là **sự quan tâm tới nhau trong cùng loài**. Quan tâm nên cần nói với nhau. Nói được thì dạy được. Dạy được thì có cách đúng. Có cách đúng thì có người làm sai. Và sợi xích đầu tiên xuất hiện.
+
+**Hệ quả quan trọng nhất của cả thế giới này: xích sinh ra từ tình thương, không phải từ ác ý.** Không có kẻ xấu nào cả. Người gắn xích lên bạn không ghét bạn — họ lo cho bạn. Bố mẹ, anh chị, bạn bè, sếp. Ai cũng từng ở cả hai phía: từng mang xích, và từng gắn xích lên người khác.
+
+Vì vậy **lời giải không phải là chặt đứt xích rồi bỏ đi.** Chặt xích là chặt luôn mối liên hệ với người thương mình. Lời giải là sống theo ý mình **mà vẫn ở lại** với những người đã gắn xích lên mình. Đó mới là điều khó thật, và là điều người lớn nào cũng đang vật lộn.
+
+Chi tiết này giải thích vì sao những câu người làm tự viết trong app phần lớn là về việc bước về phía người thân — dẫn ông anh khó tính đi ăn quán mình thích, khao anh chị họ ăn kem. Trong thế giới này, đó chính là hành động trung tâm: không rời bỏ, cũng không chiều theo, mà ở lại và vẫn là mình.
+
+### Triết lý cốt lõi
+
+Nguyên văn của người làm:
+
+> Mọi trải nghiệm, vết thương hay thành công đã trải qua đều góp phần tạo nên ta hiện tại. Quan điểm luôn là **sửa những thứ chưa tốt và phát triển những thứ đang tốt từ gốc rễ vấn đề**, không xoá bỏ thứ vốn có vì thấy nó sai.
+
+Đây là triết lý chi phối mọi thiết kế. Nó đã chặn hai đề xuất sai trước đây: cây không rễ thì **nghiêng chứ không đổ, không mất**; và sửa câu đã viết chứ **không xoá từng dòng**.
+
+Nó cũng bác bỏ cách kể "đi ngược về trạng thái nguyên sơ, gột sạch những gì người khác dạy ta" — vì nếu xích đến từ tình thương thì gột sạch xích là gột sạch luôn dấu vết của người thương mình.
+
+Mọi tính năng mang tính trừng phạt, xoá bỏ, huỷ tiến độ, hay "làm lại từ đầu" đều đi ngược triết lý này. Nêu ra và hỏi lại, đừng tự thêm.
+
+### Tên thế giới (chưa chốt)
+
+Loài người thời trước không có từ nào cho thời kỳ chưa có ngôn ngữ — đặt tên là việc của ngôn ngữ, mà lúc đó ngôn ngữ chưa tồn tại. Họ chỉ biết có thứ gì đó đã mất và không gọi tên được. **Cái tên duy nhất họ không thể đặt là tên của thứ họ đánh mất.**
+
+Nên tên thế giới phải do **những người mang xích ở thời kỳ sau** đặt, và họ tự hào về nó. Nguyên tắc: cái tên phải là **một lời hứa tốt đẹp mà nếu thực hiện đến tận cùng thì thành nhà tù**. Người trong đó tự hào; người đọc thấy lạnh người.
+
+Đang cân nhắc: "Thế giới mơ ước". Chưa chốt.
+
 
 ## Luật cấm (quan trọng nhất trong file này)
 
@@ -58,6 +95,9 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường. Có tiếng tổng hợp bằng Web Audio (ù trầm nền, tách khi vỡ ô, cao độ nhích dần) — chỉ bật trong demo. Thêm `&doc` để quay dọc 9:16 cho TikTok: bản đồ full-width dồn lên trên, chừa 1/4 màn hình dưới trống cho UI TikTok, chữ lớn hơn hẳn
 - `?demo=roots` là kịch bản riêng cho cơ chế Rễ: dựng sẵn bản đồ mười ô như đã dùng mười ngày (ngày tạo lùi về quá khứ, tính cứng trong `ROOTS_LAYOUT`/`ROOTS_DAYS_AGO`, không dùng `nextTile` ngẫu nhiên — để đảm bảo có đúng một cặp ô cạnh nhau, một có rễ một đang nghiêng), rồi tự chạy: chấm nhấp nháy → mở ô → gõ câu trả lời dần dần → rễ mọc → lùi ra → phóng to vào đúng cặp ô đó, giữ khung hình. Dùng lại nguyên luồng "nhìn lại" thật (không phải giả lập riêng) nên cũng không ghi localStorage, không gửi sự kiện đo lường
 - Cài lên màn hình chính được (manifest + service worker). Gợi ý cài hiện sau câu thứ hai, chỉ một lần, bỏ qua được vĩnh viễn
+- **Đặt tên đất**: sau ô thứ mười vỡ ra (và hiệu ứng chạy xong), hỏi một lần duy nhất — không phải biểu mẫu, một lớp phủ tối với câu hỏi và ô nhập trống, không gợi ý tên. Chạm ra ngoài hoặc Escape thì biến mất, không hỏi lại. Đặt tên xong hiện kín đáo phía trên bản đồ; chạm vào tên để sửa lại bất cứ lúc nào. Tên không bao giờ rời khỏi máy, kể cả ẩn danh — chỉ báo có/không đặt tên qua GoatCounter. "Xoá tất cả" cũng xoá tên và cờ đã-hỏi. `?askname` ép hiện lời mời ngay, dùng khi test
+
+Ý nghĩa trong lore: ngôn ngữ cho phép truyền lại **kết luận** — "làm thế này là đúng". Nhưng hiểu biết thật thì không truyền được, nó chỉ mọc lên từ việc tự làm rồi tự thấy chuyện đó dẫn tới đâu. Người khác cho bạn câu trả lời trong một giây; rễ cần bảy ngày. Cơ chế này không được thiết kế có chủ ý theo lore, nhưng nó khớp — đừng phá.
 
 ### Điểm nhấn thị giác
 
@@ -74,6 +114,7 @@ GoatCounter (`luoixam`), không cookie. Sự kiện:
 - `viet/lan-N` — mốc câu thứ 1, 3, 7, 20
 - `cai-dat/hien-goi-y`, `cai-dat/dong-y`, `cai-dat/tu-choi`
 - `re/hien-loi-moi` — lời mời "nhìn lại" xuất hiện; `re/da-nhin-lai` — đã viết xong "nhìn lại". So hai số này để biết bao nhiêu người thấy lời mời rồi thật sự trả lời
+- `dat-ten/co`, `dat-ten/bo-qua` — có đặt tên đất hay bỏ qua ở lần hỏi đầu tiên. Không bao giờ kèm theo cái tên
 
 **Nội dung người dùng viết không bao giờ rời khỏi máy họ.** Ràng buộc cứng. Điều này đã được hứa công khai với người dùng trên Reddit — không được vi phạm dù vì lý do gì.
 
@@ -98,6 +139,22 @@ Bài học chung: **không bao giờ để hành động chính phụ thuộc v�
 **Số liệu đang bẩn** vì thiết bị của người làm lẫn vào — thấy rõ qua việc `viet/lan-3` nhiều hơn `viet/lan-1`, điều bất khả về logic. Cần cơ chế `?notrack` để loại thiết bị của mình ra.
 
 ## Chưa làm — đừng tự làm
+
+### Tên thế giới và trang lore
+
+Nửa dự án còn thiếu. Hiện tại sản phẩm chỉ có **cơ chế**, chưa có **câu chuyện** — người dùng mở một ứng dụng tên "Lưới xám", viết vài câu, thấy ô vỡ ra, nhưng không biết mình đang ở đâu. Không có nơi chốn nào cả.
+
+Khi đã chốt tên, nó cần lộ ra ở ba chỗ nhỏ, không cần tính năng mới:
+
+- Một dòng khi mở lần đầu, đại ý "Bạn đang ở [tên]. Ở đây, ai nghĩ khác số đông đều mang xích."
+- Bản đồ của người dùng được gọi bằng tên một vùng đất trong thế giới đó, thay vì "bản đồ của bạn"
+- Một trang giới thiệu riêng, vài trăm chữ: nơi đó là gì, ai sống ở đấy, chuyện gì đã xảy ra khiến tự do biến mất. Chỉ người tò mò mới bấm vào
+
+### Xích không biến mất khi được phá (ý tưởng, chưa chốt)
+
+Theo triết lý không-xoá-bỏ: sợi xích bị phá không nên biến mất khỏi mảnh đất. Nó nên **trở thành một phần của mảnh đất** — nằm lại đó, thấy được, như một cái rễ khác. Người ta không chối bỏ nó, người ta mọc lên từ nó.
+
+Nếu làm, đây là chi tiết thị giác gắn kết lore với cơ chế chặt nhất hiện có.
 
 ### Xích hiển thị
 
@@ -139,6 +196,14 @@ Màn hình trống là lời mời, không phải lời than.
 
 ## Bối cảnh người làm
 
-Một người, lập trình viên Java 5 năm, làm ngoài giờ khoảng 10–15 tiếng một tuần. Mục tiêu là tác động xã hội, không phải doanh thu.
+Một người, lập trình viên Java 5 năm, làm ngoài giờ khoảng 10–15 tiếng một tuần.
 
-Hệ quả: ngân sách rất hẹp, rủi ro lớn nhất là làm quá nhiều thứ cùng lúc. Khi phân vân, chọn phương án nhỏ hơn. Khi một tính năng nghe hay, hỏi trước xem nó có phục vụ câu hỏi hiện tại không — **câu hỏi hiện tại là: làm sao để người đã chạm vào ô nhập thật sự viết được câu đầu tiên, và có lý do quay lại ngày mai.**
+**Đích là một tác phẩm cá nhân**, không phải số người dùng lớn, không phải doanh thu. Điều này đã được cân nhắc và chọn có ý thức.
+
+Hệ quả cho cách đọc số liệu: lượt xem mạng xã hội, tổng số người dùng, việc một người dùng có trả lời tin nhắn hay không — đều **không phải thước đo thành bại**. Chúng chỉ là thông tin. Một tác phẩm cá nhân thành công là tác phẩm được hoàn thành đúng như người làm hình dung, và có một số người thật sự dùng nó. Cả hai điều đó đã đang xảy ra.
+
+Hệ quả cho ưu tiên: hoàn thành thế giới (tên, lore, xích hiển thị) có giá trị tự thân, bất kể nó có tăng người dùng hay không. Thời gian đổ vào việc học thuật toán mạng xã hội là thời gian không đổ vào tác phẩm — chọn có ý thức, đừng để bản năng kéo đi.
+
+Rủi ro lớn nhất vẫn là làm quá nhiều thứ cùng lúc. Khi phân vân, chọn phương án nhỏ hơn. Khi một tính năng nghe hay, hỏi trước xem nó có phục vụ tác phẩm không.
+
+Rủi ro lớn thứ hai, đã xảy ra nhiều lần: khi phân phối im lặng, bản năng kéo người làm về phía xây thêm tính năng — vì xây là việc dễ chịu và thấy kiểm soát được. Thêm tính năng không bao giờ sửa được vấn đề phân phối. Nhận ra khi nó đang xảy ra.
