@@ -505,6 +505,63 @@
   }
   .reset:hover{color:var(--bone)}
 
+  .land-name{
+    font-size:12px;
+    letter-spacing:.04em;
+    color:var(--dim);
+    text-align:center;
+    cursor:pointer;
+    padding:4px;
+    transition:color .25s ease;
+  }
+  .land-name:hover{color:var(--bone)}
+  .land-name[hidden]{display:none}
+  body.demo .land-name{display:none}
+
+  .land-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(22,26,32,.9);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:50;
+    opacity:0;
+    transition:opacity .5s ease;
+  }
+  .land-overlay[hidden]{display:none}
+  .land-overlay.on{opacity:1}
+
+  .land-ask{
+    text-align:center;
+    max-width:34ch;
+  }
+  .land-ask-text{
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-weight:300;
+    font-size:clamp(19px,3vw,26px);
+    color:var(--bone);
+    line-height:1.55;
+    white-space:pre-line;
+    margin-bottom:24px;
+  }
+  .land-ask-input{
+    display:block;
+    width:100%;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--ash-line);
+    outline:none;
+    text-align:center;
+    color:var(--bone);
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-size:clamp(18px,2.6vw,24px);
+    padding-bottom:8px;
+  }
+
   :focus-visible{outline:1px solid var(--bone);outline-offset:3px}
 
   @media (prefers-reduced-motion:reduce){
@@ -514,8 +571,17 @@
 </head>
 <body>
 
+  <p class="land-name" id="land-name" tabindex="0" role="button" hidden></p>
+
   <div class="board-wrap">
     <div class="board" id="board" role="img" aria-label="Bản đồ của bạn"></div>
+  </div>
+
+  <div class="land-overlay" id="land-overlay" hidden>
+    <div class="land-ask">
+      <p class="land-ask-text" id="land-ask-text"></p>
+      <input type="text" id="land-ask-input" class="land-ask-input" autocomplete="off" spellcheck="false">
+    </div>
   </div>
 
   <div class="below">
@@ -602,6 +668,9 @@ const STR = {
     rootQuestion:  'Chuyện đó dẫn tới đâu?',
     rootInputLabel:'Viết chuyện đó đã dẫn tới đâu',
     rootPromise:   '{n} ngày nữa, điều này sẽ quay lại hỏi bạn.',
+    landAsk:     'Chỗ này đã đủ lớn để có một cái tên.\nBạn gọi nó là gì?',
+    landAskAria: 'Tên bạn đặt cho vùng đất này',
+    landNameEditLabel: 'sửa tên',
     /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
     demo: [
       'Tôi từ chối đi nhậu với sếp.',
@@ -656,6 +725,9 @@ const STR = {
     rootQuestion:  'Where did that lead?',
     rootInputLabel:'Write where that led',
     rootPromise:   'In {n} days, this will come back and ask you.',
+    landAsk:     'This place is big enough to have a name now.\nWhat do you call it?',
+    landAskAria: 'The name you give this land',
+    landNameEditLabel: 'edit name',
     /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
     demo: [
       'I said no to drinks with my boss.',
@@ -857,6 +929,69 @@ function maybeShowRootPromise(n){
   try { localStorage.setItem(RKEY, '1'); } catch (err) {}
 }
 
+/* ---------- tên đất ----------
+   Cái tên là nội dung người dùng viết — không bao giờ gửi đi, kể cả
+   ẩn danh. Chỉ bắn sự kiện có/không đặt tên, không bao giờ kèm chữ. */
+
+const NKEY = 'luoixam:land-name';
+const NASKKEY = 'luoixam:land-name-asked';
+let landPromptIsFirstAsk = false;
+
+function getLandName(){
+  try { return localStorage.getItem(NKEY) || ''; } catch (err) { return ''; }
+}
+
+function saveLandName(name){
+  try {
+    if (name) localStorage.setItem(NKEY, name);
+    else localStorage.removeItem(NKEY);
+  } catch (err) {}
+}
+
+function updateLandNameDisplay(){
+  const el = document.getElementById('land-name');
+  const name = getLandName();
+  el.textContent = name;
+  el.hidden = !name;
+  if (name) el.setAttribute('aria-label', name + ' — ' + T.landNameEditLabel);
+}
+
+function openLandOverlay(){
+  const overlay = document.getElementById('land-overlay');
+  const text = document.getElementById('land-ask-text');
+  const input = document.getElementById('land-ask-input');
+  text.textContent = T.landAsk;
+  input.setAttribute('aria-label', T.landAskAria);
+  input.value = getLandName();
+  overlay.hidden = false;
+  requestAnimationFrame(() => overlay.classList.add('on'));
+  input.focus();
+  if (input.value) input.setSelectionRange(input.value.length, input.value.length);
+}
+
+function closeLandOverlay(){
+  const overlay = document.getElementById('land-overlay');
+  overlay.classList.remove('on');
+  setTimeout(() => { overlay.hidden = true; }, 500);
+}
+
+function dismissLandOverlay(){
+  if (landPromptIsFirstAsk) track('dat-ten/bo-qua', 'Bỏ qua đặt tên cho đất');
+  closeLandOverlay();
+}
+
+function showLandNamePrompt(){
+  try { localStorage.setItem(NASKKEY, '1'); } catch (err) {}
+  landPromptIsFirstAsk = true;
+  openLandOverlay();
+}
+
+function maybeAskLandName(n){
+  if (n !== 10) return;
+  try { if (localStorage.getItem(NASKKEY) === '1') return; } catch (err) {}
+  setTimeout(showLandNamePrompt, 1600);
+}
+
 function shockwave(origin){
   const or = Math.floor(origin / COLS), oc = origin % COLS;
   for (let i = 0; i < TOTAL; i++){
@@ -905,6 +1040,7 @@ function addEntry(text){
   save();
   trackMilestone(entries.length);
   maybeShowRootPromise(entries.length);
+  maybeAskLandName(entries.length);
   maybeOfferInstall();
 }
 
@@ -1355,6 +1491,7 @@ function load(){
   }
   cueEntry = pickCue();
   renderAll();
+  updateLandNameDisplay();
   if (cueEntry) track('re/hien-loi-moi', 'Hiện lời mời nhìn lại');
 }
 
@@ -1418,12 +1555,43 @@ document.getElementById('reset').addEventListener('click', () => {
   if (!confirm(T.confirmReset)) return;
   entries = [];
   try { localStorage.removeItem(KEY); } catch (err) {}
+  try { localStorage.removeItem(NKEY); localStorage.removeItem(NASKKEY); } catch (err) {}
   clearTimeout(showRecall.t);
   recallEntry = null;
   cueEntry = null;
   recall.classList.remove('on');
   hint.classList.remove('gone');
+  updateLandNameDisplay();
   renderAll();
+});
+
+document.getElementById('land-name').addEventListener('click', () => {
+  landPromptIsFirstAsk = false;
+  openLandOverlay();
+});
+
+document.getElementById('land-name').addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  ev.preventDefault();
+  landPromptIsFirstAsk = false;
+  openLandOverlay();
+});
+
+document.getElementById('land-overlay').addEventListener('click', ev => {
+  if (ev.target.id === 'land-overlay') dismissLandOverlay();
+});
+
+document.getElementById('land-ask-input').addEventListener('keydown', ev => {
+  if (ev.key === 'Enter'){
+    const v = ev.target.value.trim();
+    if (!v) return;
+    saveLandName(v);
+    updateLandNameDisplay();
+    if (landPromptIsFirstAsk) track('dat-ten/co', 'Đặt tên cho đất');
+    closeLandOverlay();
+  } else if (ev.key === 'Escape'){
+    dismissLandOverlay();
+  }
 });
 
 applyLang();
@@ -1435,6 +1603,7 @@ if (DEMO_ROOTS){
 } else {
   load();
   trackVisit();
+  if (params.has('askname')) setTimeout(showLandNamePrompt, 500);
 }
 </script>
 </body>
