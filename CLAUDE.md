@@ -52,13 +52,9 @@ Nó cũng bác bỏ cách kể "đi ngược về trạng thái nguyên sơ, g�
 
 Mọi tính năng mang tính trừng phạt, xoá bỏ, huỷ tiến độ, hay "làm lại từ đầu" đều đi ngược triết lý này. Nêu ra và hỏi lại, đừng tự thêm.
 
-### Tên thế giới (chưa chốt)
+### Tên thế giới — đã chốt: không có tên
 
-Loài người thời trước không có từ nào cho thời kỳ chưa có ngôn ngữ — đặt tên là việc của ngôn ngữ, mà lúc đó ngôn ngữ chưa tồn tại. Họ chỉ biết có thứ gì đó đã mất và không gọi tên được. **Cái tên duy nhất họ không thể đặt là tên của thứ họ đánh mất.**
-
-Nên tên thế giới phải do **những người mang xích ở thời kỳ sau** đặt, và họ tự hào về nó. Nguyên tắc: cái tên phải là **một lời hứa tốt đẹp mà nếu thực hiện đến tận cùng thì thành nhà tù**. Người trong đó tự hào; người đọc thấy lạnh người.
-
-Đang cân nhắc: "Thế giới mơ ước". Chưa chốt.
+Thế giới không có tên, có chủ đích. Người sống trong đó chưa từng đứng bên ngoài nên không đặt tên được — họ chỉ gọi nó là thế giới. Những cái tên duy nhất tồn tại là tên người dùng tự đặt cho mảnh đất của họ sau câu thứ mười. Đừng bao giờ đặt tên cho thế giới lớn, kể cả để làm tiêu đề cho đẹp.
 
 
 ## Luật cấm (quan trọng nhất trong file này)
@@ -95,6 +91,7 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - `?demo` chạy kịch bản quay video: ô đầu chậm và rõ kèm câu thật, nhanh dần, rồi time-lapse. Không ghi vào localStorage, không gửi sự kiện đo lường. Có tiếng tổng hợp bằng Web Audio (ù trầm nền, tách khi vỡ ô, cao độ nhích dần) — chỉ bật trong demo. Thêm `&doc` để quay dọc 9:16 cho TikTok: bản đồ full-width dồn lên trên, chừa 1/4 màn hình dưới trống cho UI TikTok, chữ lớn hơn hẳn
 - `?demo=roots` là kịch bản riêng cho cơ chế Rễ: dựng sẵn bản đồ mười ô như đã dùng mười ngày (ngày tạo lùi về quá khứ, tính cứng trong `ROOTS_LAYOUT`/`ROOTS_DAYS_AGO`, không dùng `nextTile` ngẫu nhiên — để đảm bảo có đúng một cặp ô cạnh nhau, một có rễ một đang nghiêng), rồi tự chạy: chấm nhấp nháy → mở ô → gõ câu trả lời dần dần → rễ mọc → lùi ra → phóng to vào đúng cặp ô đó, giữ khung hình. Dùng lại nguyên luồng "nhìn lại" thật (không phải giả lập riêng) nên cũng không ghi localStorage, không gửi sự kiện đo lường
 - Cài lên màn hình chính được (manifest + service worker). Gợi ý cài hiện sau câu thứ hai, chỉ một lần, bỏ qua được vĩnh viễn
+- **Trang Thế giới**: mở qua một ký hiệu rất kín đáo (○) ở góc dưới trái — chỉ hiện sau khi đã viết ít nhất một câu, không hiện lần mở đầu, không tự bật lên. Tiêu đề trang chỉ là "Thế giới" (thế giới không có tên). Kể vì sao xích xuất hiện — từ tình thương, không phải ác ý. Chỉ tiếng Việt (`T.loreTitle` để trống ở bản Anh thì liên kết tự ẩn, chưa dịch). Đóng bằng Escape hoặc nút ở cuối trang. Ẩn trong `?demo`
 - **Đặt tên đất**: sau ô thứ mười vỡ ra (và hiệu ứng chạy xong), hỏi một lần duy nhất — không phải biểu mẫu, một lớp phủ tối với câu hỏi và ô nhập trống, không gợi ý tên. Chạm ra ngoài hoặc Escape thì biến mất, không hỏi lại tự động. Đặt tên xong hiện kín đáo phía trên bản đồ; chạm vào tên để sửa lại bất cứ lúc nào. Nếu bỏ qua lần hỏi đầu, chỗ đó không biến mất hẳn — hiện một lời mời rất nhẹ "đặt tên cho đất" (cùng kiểu chữ, cùng độ mờ với tên thật), bấm vào vẫn mở lại được overlay bất cứ lúc nào; không thì bỏ qua một lần là mất luôn cách đặt tên. Tên không bao giờ rời khỏi máy, kể cả ẩn danh — chỉ báo có/không đặt tên qua GoatCounter, và chỉ ở lần hỏi tự động đầu tiên (mở lại bằng tay không tính, không bắn lại sự kiện). "Xoá tất cả" cũng xoá tên và cờ đã-hỏi. `?askname` ép hiện lời mời ngay, dùng khi test
 
 Ý nghĩa trong lore: ngôn ngữ cho phép truyền lại **kết luận** — "làm thế này là đúng". Nhưng hiểu biết thật thì không truyền được, nó chỉ mọc lên từ việc tự làm rồi tự thấy chuyện đó dẫn tới đâu. Người khác cho bạn câu trả lời trong một giây; rễ cần bảy ngày. Cơ chế này không được thiết kế có chủ ý theo lore, nhưng nó khớp — đừng phá.
@@ -115,6 +112,7 @@ GoatCounter (`luoixam`), không cookie. Sự kiện:
 - `cai-dat/hien-goi-y`, `cai-dat/dong-y`, `cai-dat/tu-choi`
 - `re/hien-loi-moi` — lời mời "nhìn lại" xuất hiện; `re/da-nhin-lai` — đã viết xong "nhìn lại". So hai số này để biết bao nhiêu người thấy lời mời rồi thật sự trả lời
 - `dat-ten/co`, `dat-ten/bo-qua` — có đặt tên đất hay bỏ qua ở lần hỏi đầu tiên. Không bao giờ kèm theo cái tên
+- `lore/mo` — mở trang Thế giới. Không gì khác
 
 **Nội dung người dùng viết không bao giờ rời khỏi máy họ.** Ràng buộc cứng. Điều này đã được hứa công khai với người dùng trên Reddit — không được vi phạm dù vì lý do gì.
 
@@ -140,15 +138,9 @@ Bài học chung: **không bao giờ để hành động chính phụ thuộc v�
 
 ## Chưa làm — đừng tự làm
 
-### Tên thế giới và trang lore
+### Trang Thế giới — bản tiếng Anh
 
-Nửa dự án còn thiếu. Hiện tại sản phẩm chỉ có **cơ chế**, chưa có **câu chuyện** — người dùng mở một ứng dụng tên "Lưới xám", viết vài câu, thấy ô vỡ ra, nhưng không biết mình đang ở đâu. Không có nơi chốn nào cả.
-
-Khi đã chốt tên, nó cần lộ ra ở ba chỗ nhỏ, không cần tính năng mới:
-
-- Một dòng khi mở lần đầu, đại ý "Bạn đang ở [tên]. Ở đây, ai nghĩ khác số đông đều mang xích."
-- Bản đồ của người dùng được gọi bằng tên một vùng đất trong thế giới đó, thay vì "bản đồ của bạn"
-- Một trang giới thiệu riêng, vài trăm chữ: nơi đó là gì, ai sống ở đấy, chuyện gì đã xảy ra khiến tự do biến mất. Chỉ người tò mò mới bấm vào
+Trang lore (`T.loreTitle`, `T.loreSections`, `T.loreClose`) hiện chỉ có tiếng Việt. Bản tiếng Anh để trống có chủ đích — dịch xong thì điền vào, liên kết mở trang sẽ tự hiện cho người dùng tiếng Anh, không cần sửa gì khác.
 
 ### Xích không biến mất khi được phá (ý tưởng, chưa chốt)
 

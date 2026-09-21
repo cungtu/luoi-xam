@@ -562,6 +562,78 @@
     padding-bottom:8px;
   }
 
+  .lore-link{
+    position:fixed;
+    bottom:12px;
+    left:14px;
+    background:none;
+    border:none;
+    color:#2B313B;
+    font-size:14px;
+    line-height:1;
+    cursor:pointer;
+    padding:8px;
+    transition:color .4s ease;
+  }
+  .lore-link:hover{color:var(--dim)}
+  .lore-link[hidden]{display:none}
+  body.demo .lore-link{display:none}
+
+  .lore-page{
+    position:fixed;
+    inset:0;
+    background:var(--void);
+    overflow-y:auto;
+    z-index:60;
+    padding:11vh 6vw 14vh;
+  }
+  .lore-page[hidden]{display:none}
+  body.demo .lore-page{display:none}
+
+  .lore-content{
+    max-width:44ch;
+    margin:0 auto;
+  }
+  .lore-title{
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-weight:300;
+    font-size:15px;
+    color:var(--dim);
+    margin-bottom:52px;
+  }
+  .lore-section{margin-bottom:40px}
+  .lore-h{
+    font-family:"Fraunces",Georgia,serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:19px;
+    color:var(--bone);
+    margin-bottom:16px;
+  }
+  .lore-p{
+    font-family:"Fraunces",Georgia,serif;
+    font-weight:300;
+    font-size:16px;
+    line-height:1.85;
+    color:var(--bone);
+    margin-bottom:18px;
+  }
+  .lore-close{
+    display:block;
+    margin:56px auto 0;
+    background:none;
+    border:none;
+    color:var(--dim);
+    font-family:"Be Vietnam Pro",sans-serif;
+    font-size:12px;
+    letter-spacing:.06em;
+    cursor:pointer;
+    padding:8px;
+    transition:color .25s ease;
+  }
+  .lore-close:hover{color:var(--bone)}
+
   :focus-visible{outline:1px solid var(--bone);outline-offset:3px}
 
   @media (prefers-reduced-motion:reduce){
@@ -615,6 +687,16 @@
   </div>
 
   <button class="reset" id="reset">xoá tất cả</button>
+
+  <button class="lore-link" id="lore-link" type="button" hidden>○</button>
+
+  <div class="lore-page" id="lore-page" hidden>
+    <div class="lore-content">
+      <p class="lore-title" id="lore-title"></p>
+      <div id="lore-body"></div>
+      <button class="lore-close" id="lore-close" type="button"></button>
+    </div>
+  </div>
 
 <!-- Đếm lượt truy cập. Không dùng cookie, không gửi nội dung người dùng viết. -->
 <script data-goatcounter="https://luoixam.goatcounter.com/count"
@@ -700,7 +782,40 @@ const STR = {
       'Người đó vẫn ổn. Tôi lo hơi thừa.',
       'Tôi thấy một quán nhỏ tôi chưa từng để ý.'
     ],
-    demoRootsAnswer: 'Không ai để ý cả. Tôi lo hơi thừa.'
+    demoRootsAnswer: 'Không ai để ý cả. Tôi lo hơi thừa.',
+    /* ↓ Trang lore. Chỉ tiếng Việt — bản Anh để trống, làm sau. ↓ */
+    loreTitle: 'Thế giới',
+    loreClose: 'quay lại bản đồ',
+    loreSections: [
+      { h: 'Thời chưa có lời', p: [
+        'Rất lâu trước đây, loài người ở nơi này không biết nói.',
+        'Không ai dạy ai điều gì. Người ta nhìn nhau mà học. Một người trèo cây hái quả, người khác nhìn theo rồi tự tìm cách trèo của mình. Có người leo bằng tay, có người bám bằng chân, có người ngồi đợi quả rụng. Không ai bảo ai là đúng, vì chưa có tiếng nào để nói "đúng".',
+        'Họ lớn lên rất nhanh. Mỗi người một kiểu.',
+        'Không ai còn nhớ thời đó. Nhưng ai cũng đã từng sống ở đó — trong những ngày đầu tiên sau khi được sinh ra.'
+      ]},
+      { h: 'Lời đầu tiên', p: [
+        'Rồi một ngày, có người thấy người mình thương sắp ngã.',
+        'Họ muốn nói "cẩn thận". Nhưng chưa có tiếng nào cho điều đó. Nên họ tạo ra một tiếng.',
+        'Đó là lời đầu tiên. Nó sinh ra vì một người lo cho một người khác.'
+      ]},
+      { h: 'Sợi xích đầu tiên', p: [
+        'Có lời thì dạy được nhau. Dạy được thì có cách hay hơn, rồi có cách đúng. Có cách đúng thì có người làm sai.',
+        'Lần đầu tiên, có người nói với người khác: "Không phải thế."',
+        'Và trên người nghe, một sợi xích nhỏ xuất hiện.',
+        'Không ai muốn gắn nó lên. Người nói chỉ sợ người nghe sẽ ngã.'
+      ]},
+      { h: 'Bây giờ', p: [
+        'Giờ ai ở đây cũng biết nói. Ai cũng biết thế nào là đúng. Và gần như ai cũng mang xích — do bố mẹ, anh chị, bạn bè, thầy cô gắn lên, từng sợi một, bằng tất cả sự quan tâm.',
+        'Họ đi giống nhau, nghĩ giống nhau, và vì thế hiểu nhau rất rõ.',
+        'Họ không đặt tên cho nơi này. Họ chỉ gọi nó là thế giới — vì chưa ai từng thấy nơi nào khác.'
+      ]},
+      { h: 'Mảnh đất của bạn', p: [
+        'Bạn đang ở đây.',
+        'Mỗi ngày bạn làm một điều theo ý mình, một ô trong lưới vỡ ra. Không phải để rời đi. Những người đã gắn xích lên bạn vẫn ở đó, và họ vẫn thương bạn.',
+        'Có sợi xích giữ bạn khỏi ngã. Có sợi giữ bạn khỏi bước đi.',
+        'Sợi nào là sợi nào — chỉ bạn biết.'
+      ]}
+    ]
   },
   en: {
     prefix:      'Today I',
@@ -758,7 +873,11 @@ const STR = {
       'They were fine. I worried for nothing.',
       "I noticed a small shop I'd never seen before."
     ],
-    demoRootsAnswer: 'No one noticed. I worried for nothing.'
+    demoRootsAnswer: 'No one noticed. I worried for nothing.',
+    /* ↓ Chưa dịch — để trống thì liên kết mở trang lore tự ẩn ↓ */
+    loreTitle: '',
+    loreClose: '',
+    loreSections: []
   }
 };
 
@@ -1010,6 +1129,49 @@ function maybeAskLandName(n){
   setTimeout(showLandNamePrompt, 1600);
 }
 
+/* ---------- trang Thế giới ----------
+   Liên kết rất kín đáo — chỉ hiện sau khi đã viết ít nhất một câu,
+   không hiện lần mở đầu, không tự bật lên. Chỉ tiếng Việt: khi
+   T.loreTitle để trống (chưa dịch), liên kết tự ẩn luôn. */
+
+function updateLoreLinkVisibility(){
+  document.getElementById('lore-link').hidden = DEMO || !T.loreTitle || entries.length === 0;
+}
+
+function renderLore(){
+  document.getElementById('lore-title').textContent = T.loreTitle;
+  const body = document.getElementById('lore-body');
+  body.innerHTML = '';
+  (T.loreSections || []).forEach(sec => {
+    const wrap = document.createElement('div');
+    wrap.className = 'lore-section';
+    const h = document.createElement('p');
+    h.className = 'lore-h';
+    h.textContent = sec.h;
+    wrap.appendChild(h);
+    sec.p.forEach(line => {
+      const p = document.createElement('p');
+      p.className = 'lore-p';
+      p.textContent = line;
+      wrap.appendChild(p);
+    });
+    body.appendChild(wrap);
+  });
+  document.getElementById('lore-close').textContent = T.loreClose;
+}
+
+function openLore(){
+  renderLore();
+  const page = document.getElementById('lore-page');
+  page.hidden = false;
+  page.scrollTop = 0;
+  track('lore/mo', 'Mở trang Thế giới');
+}
+
+function closeLore(){
+  document.getElementById('lore-page').hidden = true;
+}
+
 function shockwave(origin){
   const or = Math.floor(origin / COLS), oc = origin % COLS;
   for (let i = 0; i < TOTAL; i++){
@@ -1059,6 +1221,7 @@ function addEntry(text){
   trackMilestone(entries.length);
   maybeShowRootPromise(entries.length);
   maybeAskLandName(entries.length);
+  updateLoreLinkVisibility();
   maybeOfferInstall();
 }
 
@@ -1510,6 +1673,7 @@ function load(){
   cueEntry = pickCue();
   renderAll();
   updateLandNameDisplay();
+  updateLoreLinkVisibility();
   if (cueEntry) track('re/hien-loi-moi', 'Hiện lời mời nhìn lại');
 }
 
@@ -1580,6 +1744,7 @@ document.getElementById('reset').addEventListener('click', () => {
   recall.classList.remove('on');
   hint.classList.remove('gone');
   updateLandNameDisplay();
+  updateLoreLinkVisibility();
   renderAll();
 });
 
@@ -1610,6 +1775,12 @@ document.getElementById('land-ask-input').addEventListener('keydown', ev => {
   } else if (ev.key === 'Escape'){
     dismissLandOverlay();
   }
+});
+
+document.getElementById('lore-link').addEventListener('click', openLore);
+document.getElementById('lore-close').addEventListener('click', closeLore);
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape' && !document.getElementById('lore-page').hidden) closeLore();
 });
 
 applyLang();
