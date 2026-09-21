@@ -671,6 +671,7 @@ const STR = {
     landAsk:     'Chỗ này đã đủ lớn để có một cái tên.\nBạn gọi nó là gì?',
     landAskAria: 'Tên bạn đặt cho vùng đất này',
     landNameEditLabel: 'sửa tên',
+    landUnnamed: 'đặt tên cho đất',
     /* ↓ SỬA NHỮNG CÂU NÀY THÀNH CHUYỆN THẬT CỦA BẠN ↓ */
     demo: [
       'Tôi từ chối đi nhậu với sếp.',
@@ -728,6 +729,7 @@ const STR = {
     landAsk:     'This place is big enough to have a name now.\nWhat do you call it?',
     landAskAria: 'The name you give this land',
     landNameEditLabel: 'edit name',
+    landUnnamed: 'name this land',
     /* ↓ EDIT THESE INTO YOUR OWN REAL SENTENCES ↓ */
     demo: [
       'I said no to drinks with my boss.',
@@ -948,12 +950,27 @@ function saveLandName(name){
   } catch (err) {}
 }
 
+function wasLandNameAsked(){
+  try { return localStorage.getItem(NASKKEY) === '1'; } catch (err) { return false; }
+}
+
+// Có tên thì hiện tên. Chưa có nhưng đã từng được hỏi (kể cả bỏ qua)
+// thì hiện một lời mời rất nhẹ — nếu không, ai lỡ bỏ qua lần đầu sẽ
+// không còn chỗ nào để quay lại đặt tên nữa.
 function updateLandNameDisplay(){
   const el = document.getElementById('land-name');
   const name = getLandName();
-  el.textContent = name;
-  el.hidden = !name;
-  if (name) el.setAttribute('aria-label', name + ' — ' + T.landNameEditLabel);
+  if (name){
+    el.textContent = name;
+    el.hidden = false;
+    el.setAttribute('aria-label', name + ' — ' + T.landNameEditLabel);
+  } else if (wasLandNameAsked()){
+    el.textContent = T.landUnnamed;
+    el.hidden = false;
+    el.setAttribute('aria-label', T.landUnnamed);
+  } else {
+    el.hidden = true;
+  }
 }
 
 function openLandOverlay(){
@@ -978,6 +995,7 @@ function closeLandOverlay(){
 function dismissLandOverlay(){
   if (landPromptIsFirstAsk) track('dat-ten/bo-qua', 'Bỏ qua đặt tên cho đất');
   closeLandOverlay();
+  updateLandNameDisplay();
 }
 
 function showLandNamePrompt(){
