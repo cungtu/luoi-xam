@@ -94,7 +94,15 @@ Một file `index.html` duy nhất, không framework, không build step, không 
 - **Trang Thế giới**: mở qua một ký hiệu rất kín đáo (○) ở góc dưới trái — chỉ hiện sau khi đã viết ít nhất một câu, không hiện lần mở đầu, không tự bật lên. Tiêu đề trang chỉ là "Thế giới" (thế giới không có tên). Kể vì sao xích xuất hiện — từ tình thương, không phải ác ý. Chỉ tiếng Việt (`T.loreTitle` để trống ở bản Anh thì liên kết tự ẩn, chưa dịch). Đóng bằng Escape hoặc nút ở cuối trang. Ẩn trong `?demo`
 - **Đặt tên đất**: sau ô thứ mười vỡ ra (và hiệu ứng chạy xong), hỏi một lần duy nhất — không phải biểu mẫu, một lớp phủ tối với câu hỏi và ô nhập trống, không gợi ý tên. Chạm ra ngoài hoặc Escape thì biến mất, không hỏi lại tự động. Đặt tên xong hiện kín đáo phía trên bản đồ; chạm vào tên để sửa lại bất cứ lúc nào. Nếu bỏ qua lần hỏi đầu, chỗ đó không biến mất hẳn — hiện một lời mời rất nhẹ "đặt tên cho đất" (cùng kiểu chữ, cùng độ mờ với tên thật), bấm vào vẫn mở lại được overlay bất cứ lúc nào; không thì bỏ qua một lần là mất luôn cách đặt tên. Tên không bao giờ rời khỏi máy, kể cả ẩn danh — chỉ báo có/không đặt tên qua GoatCounter, và chỉ ở lần hỏi tự động đầu tiên (mở lại bằng tay không tính, không bắn lại sự kiện). "Xoá tất cả" cũng xoá tên và cờ đã-hỏi. `?askname` ép hiện lời mời ngay, dùng khi test
 
-Ý nghĩa trong lore: ngôn ngữ cho phép truyền lại **kết luận** — "làm thế này là đúng". Nhưng hiểu biết thật thì không truyền được, nó chỉ mọc lên từ việc tự làm rồi tự thấy chuyện đó dẫn tới đâu. Người khác cho bạn câu trả lời trong một giây; rễ cần bảy ngày. Cơ chế này không được thiết kế có chủ ý theo lore, nhưng nó khớp — đừng phá.
+**Câu hỏi của Rễ không đòi bài học.** Câu hỏi là "Bây giờ nhìn lại, hôm đó thế nào?" — không phải "chuyện đó dẫn tới đâu". Đổi ngày 2/10/2026, sau tám ngày người làm tự dùng.
+
+Rễ không đòi bài học, không đòi hệ quả. Bài học rút ra từ một sự kiện chỉ đúng với hoàn cảnh đó, và việc rút ra bài học rồi áp cho lần sau chính là tiêu chí chung — chính là sợi xích người dùng tự gắn lên mình. Nếu rễ đòi bài học, sản phẩm đang dạy người ta tự xích lại.
+
+Thứ rễ thật sự làm: mở lại một ngày đã đóng. Người dùng viết một dòng lúc đó; bảy ngày sau dòng đó kéo theo cả bối cảnh tưởng đã quên. Giá trị là nhìn rõ hơn, không phải kết luận.
+
+Trong lore: kết luận thì truyền lại được, và đó là thứ sinh ra xích. Việc nhìn một chuyện của mình rõ dần theo thời gian thì không ai làm hộ được. Cây có rễ không phải cây đã rút ra bài học — là cây đã được nhìn kỹ.
+
+Đừng đổi câu hỏi này thành dạng đòi kết quả, bài học, hay thay đổi bản thân.
 
 ### Điểm nhấn thị giác
 
@@ -135,6 +143,10 @@ Bài học chung: **không bao giờ để hành động chính phụ thuộc v�
 **Chỗ rò rỉ lớn nhất hiện nay:** hơn một nửa số người chạm vào ô nhập rồi không viết gì. Giả thuyết chưa kiểm chứng: họ không biết viết gì, vì câu hỏi "hôm nay bạn làm gì theo ý mình?" buộc người ta tự đánh giá xem việc mình làm có "đủ theo ý mình" không. Đó là rào cản tâm lý, không phải giao diện — và mỉa mai thay, nó chính là cái xích trong thế giới này. Hướng đang cân nhắc: đổi cách hỏi, hoặc cho thấy vài ví dụ thật ở màn hình đầu để hạ ngưỡng.
 
 **Số liệu đang bẩn** vì thiết bị của người làm lẫn vào — thấy rõ qua việc `viet/lan-3` nhiều hơn `viet/lan-1`, điều bất khả về logic. Cần cơ chế `?notrack` để loại thiết bị của mình ra.
+
+**Đã đi hết một vòng rễ hoàn chỉnh:** người làm tự dùng liên tục 8 ngày (đến 2/10/2026), là người đầu tiên trải nghiệm trọn vẹn cơ chế Rễ. Qua mốc câu thứ mười và đặt tên vùng đất là "Hành trình phiêu lưu để tìm hiểu cuộc sống" — xác nhận quyết định để người dùng tự đặt tên là đúng.
+
+**Xích không nằm ở ô nhập, nó xuất hiện khi biết có người đang nhìn:** không gặp hiện tượng khựng lại khi viết trong app. Nhưng khi chọn câu để cho người lạ xem trong video, câu bật ra đầu tiên lại là câu nghe oai nhất. Nó không ngăn người ta viết — nó làm người ta viết phiên bản đẹp hơn của sự thật. Cần nhớ điều này khi thiết kế phần xích hiển thị.
 
 ## Chưa làm — đừng tự làm
 
